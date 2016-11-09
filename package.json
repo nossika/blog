@@ -1,0 +1,24 @@
+{
+  "name": "nossika",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nossika/blog.git"
+  },
+  "author": "NossiKa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nossika/blog/issues"
+  },
+  "homepage": "https://github.com/nossika/blog#readme",
+  "dependencies": {
+    "koa": "^1.2.4",
+    "koa-router": "^5.4.0",
+    "koa-static": "^2.0.0"
+  }
+}
