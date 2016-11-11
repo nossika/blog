@@ -1,0 +1,24 @@
+<% include _parts/header.ejs %>
+<nav>
+    <a class="nav-item<%= nav==='index'?' at':'' %>" href="/">首页</a>
+    <a class="nav-item<%= nav==='board'?' at':'' %>" href="/board">留言板</a>
+    <a class="nav-item<%= nav==='about'?' at':'' %>" href="/about">关于</a>
+</nav>
+<section id="content">
+
+    <% if(nav === 'index') { %>
+        <% include _main/index.ejs %>
+    <% }else if(nav === 'board'){ %>
+        <% include _main/board.ejs %>
+    <% }else if(nav === 'about'){ %>
+        <% include _main/about.ejs %>
+    <% }else if(nav === '404'){ %>
+        <% include _main/404.ejs %>
+    <% } %>
+
+
+</section>
+<script>
+    Util.init_nav();
+</script>
+<% include _parts/footer.ejs %>

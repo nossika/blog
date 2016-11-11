@@ -1,10 +1,15 @@
-const fs = require('fs');
-const ejs = require('ejs');
 const util = require('../util/main');
 
-module.exports = (app) => {
-    app.get('/', function* (){
-        let html = util.render('index.ejs', {aaa: 1112342535453});
-        this.body = html;
-    })
+let route_index = (me)=>{
+    let html = util.render('main.ejs', {nav: 'index'});
+    me.body = html;
+};
+
+module.exports = (router) => {
+    router.get('/', function* (){
+        route_index(this);
+    });
+    router.get('/index', function* (){
+        route_index(this);
+    });
 };
