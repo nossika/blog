@@ -1,3 +1,4 @@
+"use strict";
 window.Util = (()=>{
     const server = 'http://localhost:7869';
     let Util = {

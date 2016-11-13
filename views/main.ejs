@@ -20,5 +20,10 @@
 </section>
 <script>
     Util.init_nav();
+    PlayerUtil.get_list((list) => {
+        PlayerUtil.init_player({
+            list: list
+        });
+    });
 </script>
 <% include _parts/footer.ejs %>

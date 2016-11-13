@@ -1,3 +1,4 @@
+"use strict";
 const koa = require('koa');
 const koa_static = require('koa-static');
 const koa_router = require('koa-router')();

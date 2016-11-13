@@ -1,4 +1,4 @@
-
+"use strict";
 const util = require('../util/main');
 
 module.exports = (router) => {
