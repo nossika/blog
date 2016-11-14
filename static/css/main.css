@@ -42,3 +42,29 @@ button{
     padding: 0.3rem 0.8rem;
     border-radius: 0.2rem;
 }
+
+/* player */
+#player .control-btn{
+    height:50px;
+    width:50px;
+    fill:#fff;
+    stroke:#ddd;
+    stroke-width: 25;
+    transition: all .5s ease;
+}
+#player .control-btn:hover{
+    fill:#aaa;
+    stroke:#fff;
+}
+
+#player .mode-btn{
+    height:30px;
+    width:30px;
+    fill:#ddd;
+    stroke:none;
+    transition: all .5s ease;
+}
+#player .mode-btn:hover{
+    fill:#aaa;
+}
+

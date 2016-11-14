@@ -1,7 +1,7 @@
 window.PlayerUtil = (() => {
     const server = 'http://localhost:7869';
     let _data = {
-        mode: 'normal', // normal / loop / random
+        mode: '', // normal / loop / random
         current: 0,
         list: null,
     };
@@ -10,12 +10,12 @@ window.PlayerUtil = (() => {
         init_player: (config) => {
             PlayerUtil.player_render(config);
             PlayerUtil.player_events(config);
-            PlayerUtil.set_mode('normal');
+            PlayerUtil.switch_mode('normal');
             PlayerUtil.set_volume(0.8);
         },
         player_render: (config) => {
             _player = document.createElement('section');
-            _player.id = 'player';
+            _player.id = config.id || 'player';
             _player.innerHTML = PlayerUtil.player_html();
             let ul = _player.querySelector('[data-part="list"]');
             _data.list = config.list || [];
@@ -42,10 +42,9 @@ window.PlayerUtil = (() => {
                 PlayerUtil.play(_data.mode !== 'random' ? 'pre' : 'random');
             });
 
-            [].slice.call(_player.querySelectorAll('[data-mode]')).forEach((btn) => {
-                btn.addEventListener('click', (e) => {
-                    PlayerUtil.set_mode(btn.getAttribute('data-mode'));
-                });
+            let mode_btn = _player.querySelector('[data-mode]');
+            mode_btn.addEventListener('click', (e) => {
+                PlayerUtil.switch_mode();
             });
 
             _audio.addEventListener('loadstart', (e) => {
@@ -93,9 +92,13 @@ window.PlayerUtil = (() => {
             _audio.load();
         },
         audio_play: () => {
+            let svg = _player.querySelector('[data-control="play"] use');
+            svg.setAttribute('xlink:href','#svgpath_audio_pause');
             _audio.play();
         },
         audio_pause: () => {
+            let use = _player.querySelector('[data-control="play"] use');
+            use.setAttribute('xlink:href','#svgpath_audio_play');
             _audio.pause();
         },
         onbegin: (e) => {
@@ -124,8 +127,19 @@ window.PlayerUtil = (() => {
                     break;
             }
         },
-        set_mode: (mode) => {
+        switch_mode: (mode) => {
+            let mode_list = ['normal', 'loop', 'random'],
+                title_list = ['顺序播放', '单曲循环', '随机播放'];
+
+            let mode_div = _player.querySelector('[data-mode]'),
+                svg = mode_div.querySelector('use');
+            if(!mode){
+                mode = mode_list[mode_list.indexOf(_data.mode) + 1];
+                if(!mode) mode = mode_list[0];
+            }
             _data.mode = mode;
+            svg.setAttribute('xlink:href',`#svgpath_audio_${mode}`);
+            mode_div.setAttribute('title', title_list[mode_list.indexOf(_data.mode)]);
         },
         set_volume: (value) => {
             _audio.volume = value;
@@ -166,14 +180,28 @@ window.PlayerUtil = (() => {
                     <p data-info="author"></p>
                 </div>
                 <div data-part="control">
-                    <button data-control="pre">pre</button>
-                    <button data-control="play">play</button>
-                    <button data-control="next">next</button>
+                    <div class="control-btn" data-control="pre" title="上一首 (ctrl + ←)">
+                        <svg viewbox="0 0 1024 1024">
+                            <use xlink:href="#svgpath_audio_pre"/>
+                        </svg>
+                    </div>
+                    <div class="control-btn" data-control="play" title="播放/暂停 (P)">
+                        <svg viewbox="0 0 1024 1024">
+                            <use xlink:href="#svgpath_audio_play"/>
+                        </svg>
+                    </div>
+                    <div class="control-btn" data-control="next" title="下一首 (ctrl + →)">
+                        <svg viewbox="0 0 1024 1024">
+                            <use xlink:href="#svgpath_audio_next"/>
+                        </svg>
+                    </div>
                 </div>
                 <div data-part="mode">
-                    <button data-mode="normal">normal</button>
-                    <button data-mode="loop">loop</button>
-                    <button data-mode="random">random</button>
+                    <div class="mode-btn" data-mode="" title="">
+                        <svg viewbox="0 0 1024 1024">
+                            <use xlink:href="#svgpath_audio_normal"/>
+                        </svg>
+                    </div>
                 </div>
                 <div data-part="progress_text">
                 </div>

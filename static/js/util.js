@@ -5,15 +5,21 @@ window.Util = (()=>{
         init_nav: () => {
             let nav_items = [].slice.call(document.querySelectorAll('nav .nav-item'));
             nav_items.forEach((item) => {
+                if(item.classList.contains('at')){
+                    let href = item.getAttribute('href'),
+                        name = href.replace('/','');
+                    history.replaceState({
+                        nav: name
+                    }, name, href)
+                }
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
-                    let target = e.target;
-                    if(target.classList.contains('at')) return;
+                    if(item.classList.contains('at')) return;
                     nav_items.forEach((item) => {
                         item.classList.remove('at');
                     });
-                    target.classList.add('at');
-                    let href = target.getAttribute('href'),
+                    item.classList.add('at');
+                    let href = item.getAttribute('href'),
                         name = href.replace('/','');
                     Util.render_part(name, () => {
                         history.pushState({
@@ -21,6 +27,7 @@ window.Util = (()=>{
                         }, name, href)
                     });
                 });
+
             });
             window.addEventListener('popstate', (e) => {
                 let state = e.state;
@@ -30,7 +37,7 @@ window.Util = (()=>{
         render_part: (part, cb) => {
             part = part || 'index';
             let container = document.querySelector('#content');
-            // container.innerHTML = 'waiting';
+            // waiting animation;
             Util.ajax({
                 url: `${server}/tool/view_part`,
                 data: {
