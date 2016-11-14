@@ -14,12 +14,12 @@ module.exports = (router) => {
         let path = static_path + file_path;
         let file_list = fs.readdirSync(path);
         let list = [];
-        file_list.forEach((file_name) => {
-            let [author, name] = file_name.split('.')[0].split('---');
+        file_list.forEach((name) => {
+            let [author, title] = name.slice(0, name.lastIndexOf('.')).split(' - ');
             list.push({
-                path: file_path + '/' + file_name,
+                path: file_path + '/' + name,
                 author: author,
-                name: name,
+                title: title,
                 cover: `/music/cover/${author}.jpg`
             })
         });
