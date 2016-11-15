@@ -26,6 +26,10 @@ window.PlayerUtil = (() => {
             if(_data.list.length){
                 PlayerUtil.play('random');
             }
+            let progress_bar = _player.querySelector('[data-part="progress_bar"]');
+            PlayerUtil.init_drag(progress_bar, {
+                ori: 'x'
+            });
             document.body.appendChild(_player);
         },
         player_events: (config) => {
@@ -56,9 +60,13 @@ window.PlayerUtil = (() => {
             _audio.addEventListener('timeupdate', (e) => {
                 PlayerUtil.onplay(e);
             });
+            _audio.addEventListener('progress', (e) => {
+                PlayerUtil.onbuffer(e);
+            });
             _audio.addEventListener('ended', (e) => {
                 PlayerUtil.onend(e);
             });
+
         },
         play: (type) => {
             let index;
@@ -114,6 +122,14 @@ window.PlayerUtil = (() => {
         onplay: (e) => {
             PlayerUtil.update_progress();
         },
+        onbuffer: (e) => {
+            let buffer = _audio.buffered;
+            let loaded = [];
+            for(let i = 0; i < buffer.length; i++){
+                loaded.push([buffer.start(i), buffer.end(i)])
+            }
+            // console.log(loaded)
+        },
         onend: (e) => {
             switch (_data.mode){
                 case 'normal':
@@ -148,7 +164,7 @@ window.PlayerUtil = (() => {
             let _progress_text = _player.querySelector('[data-part="progress_text"]');
             _progress_text.innerText = PlayerUtil.convert_sec(_audio.currentTime) + ' / ' + PlayerUtil.convert_sec(_audio.duration);
             let _progress_bar = _player.querySelector('[data-part="progress_bar"]');
-            _progress_bar.innerText = _audio.duration ? _audio.currentTime / _audio.duration : 0;
+            // _progress_bar.innerText = _audio.duration ? _audio.currentTime / _audio.duration : 0;
         },
         convert_sec: (sec) => {
             if(!sec) sec = 0;
@@ -223,8 +239,48 @@ window.PlayerUtil = (() => {
             });
             return html;
         },
-        init_drag: (bar, config) => {
+        init_drag: (container, config = {}) => {
+            let ori = config.ori === 'y' ? 'y' : 'x',
+                dot_w = config.dot_w || 10,
+                dot_h = config.dot_h || 10,
+                value = config.value || 0;
+            let bar = document.createElement('div');
+            bar.style.cssText = 'position:relative;width:100%;height:100%;';
+            let progress = document.createElement('div');
+            progress.style.position = 'absolute';
+            bar.appendChild(progress);
+            let buffered = document.createElement('div');
+            buffered.style.position = 'absolute';
+            bar.appendChild(buffered);
+            let dot = document.createElement('div');
+            dot.style.cssText = 'background:red';
+            dot.style.position = 'absolute';
+            dot.style.width = dot_w + 'px';
+            dot.style.height = dot_h + 'px';
+            dot.style.left = `calc(${ori === 'x' ? value * 100 : 50 }% - ${dot_w / 2}px)`;
+            dot.style.top = `calc(${ori === 'y' ? value * 100 : 50 }% - ${dot_h / 2}px)`;
 
+            let dot_move = (e) => {
+                console.log(e);
+            };
+            let dot_stop = (e) => {
+
+                console.log(e,2);
+                document.removeEventListener('mousemove', dot_move);
+                document.removeEventListener('mouseup', dot_stop);
+            };
+            dot.addEventListener('mousedown', () => {
+                document.addEventListener('mousemove', dot_move);
+                document.addEventListener('mouseup', dot_stop);
+            });
+            bar.appendChild(dot);
+            container.appendChild(bar);
+            return {
+                dot: dot,
+                bar: bar,
+                progress: progress,
+                buffered: buffered
+            }
         },
         ajax: (config) => {
             let method = (config.method || 'GET').toUpperCase();

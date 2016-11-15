@@ -68,3 +68,9 @@ button{
     fill:#aaa;
 }
 
+#player [data-part="progress_bar"]{
+    height:10px;
+    width:300px;
+    background: #eef;
+}
+
