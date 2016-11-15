@@ -1,4 +1,4 @@
-window.PlayerUtil = (() => {
+window.PlayerUtil = ((Util) => {
     const server = 'http://localhost:7869';
     let _data = {
         mode: '', // normal / loop / random
@@ -27,10 +27,21 @@ window.PlayerUtil = (() => {
                 PlayerUtil.play('random');
             }
             let progress_bar = _player.querySelector('[data-part="progress_bar"]');
-            PlayerUtil.init_drag(progress_bar, {
-                ori: 'x'
-            });
             document.body.appendChild(_player);
+
+            let Bar = new Util.Bar(progress_bar, {
+                orientation: 'x',
+                default: 0.7,
+                overflow: true,
+            });
+            Bar.elem.dot.style.background = 'red';
+            Bar.elem.dot.style.height = '12px';
+            Bar.elem.dot.style.width = '16px';
+            Bar.elem.bar.style.background = 'blue';
+            Bar.update();
+            setTimeout(()=>{Bar.value = 0.2},3000);
+            Bar.event.drag = ()=>{console.log(Bar.value,1)};
+            Bar.event.click = ()=>{console.log(Bar.value,2)};
         },
         player_events: (config) => {
             let next_btn = _player.querySelector('[data-control="next"]');
@@ -176,7 +187,7 @@ window.PlayerUtil = (() => {
             return m + ':' + s;
         },
         get_list: (callback) => {
-            PlayerUtil.ajax({
+            Util.ajax({
                 url: server + '/tool/music_info',
                 callback: (data, status) => {
                     if(status === 200) {
@@ -238,90 +249,7 @@ window.PlayerUtil = (() => {
                 `
             });
             return html;
-        },
-        init_drag: (container, config = {}) => {
-            let ori = config.ori === 'y' ? 'y' : 'x',
-                dot_w = config.dot_w || 10,
-                dot_h = config.dot_h || 10,
-                value = config.value || 0;
-            let bar = document.createElement('div');
-            bar.style.cssText = 'position:relative;width:100%;height:100%;';
-            let progress = document.createElement('div');
-            progress.style.position = 'absolute';
-            bar.appendChild(progress);
-            let buffered = document.createElement('div');
-            buffered.style.position = 'absolute';
-            bar.appendChild(buffered);
-            let dot = document.createElement('div');
-            dot.style.cssText = 'background:red';
-            dot.style.position = 'absolute';
-            dot.style.width = dot_w + 'px';
-            dot.style.height = dot_h + 'px';
-            dot.style.left = `calc(${ori === 'x' ? value * 100 : 50 }% - ${dot_w / 2}px)`;
-            dot.style.top = `calc(${ori === 'y' ? value * 100 : 50 }% - ${dot_h / 2}px)`;
-
-            let dot_move = (e) => {
-                console.log(e);
-            };
-            let dot_stop = (e) => {
-
-                console.log(e,2);
-                document.removeEventListener('mousemove', dot_move);
-                document.removeEventListener('mouseup', dot_stop);
-            };
-            dot.addEventListener('mousedown', () => {
-                document.addEventListener('mousemove', dot_move);
-                document.addEventListener('mouseup', dot_stop);
-            });
-            bar.appendChild(dot);
-            container.appendChild(bar);
-            return {
-                dot: dot,
-                bar: bar,
-                progress: progress,
-                buffered: buffered
-            }
-        },
-        ajax: (config) => {
-            let method = (config.method || 'GET').toUpperCase();
-            let url = config.url;
-            let data = config.data || {};
-            let header = config.header || {};
-            let callback = config.callback || function(){};
-
-            try{
-                let XHR = new XMLHttpRequest();
-                let data_arr = [];
-                for(let key in data){
-                    data_arr.push(key+'='+data[key]);
-                }
-                let data_str = data_arr.join('&');
-
-                let body;
-                if(method === 'GET'){
-                    url += '?' + data_str;
-                    body = null;
-                }else if(method === 'POST'){
-                    body = data_str;
-                }else{
-                    throw 'only get/post available';
-                }
-
-                XHR.onreadystatechange = function(){
-                    if(XHR.readyState === 4){
-                        callback(XHR.responseText,XHR.status);
-                    }
-                };
-                XHR.open(method,url);
-                for(let i in header){
-                    XHR.setRequestHeader(i, header[i]);
-                }
-                XHR.send(body);
-            }catch (e){
-                console.log(e);
-            }
-        },
-       
+        }
     };
     return PlayerUtil;
-})();
+})(window.Util);
