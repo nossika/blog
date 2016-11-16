@@ -3,24 +3,20 @@ window.Util = (()=>{
     const server = 'http://localhost:7869';
     class Bar {
         constructor(container, config = {}) {
-            let _ori = config.orientation === 'y' ? 'y' : 'x',
-                _def = config.default || 0,
-                _hide_dot = config.hide_dot || false,
-                _hide_bar = config.hide_bar || false,
-                _disable = config.disable || false;
+            this._value = config.default || 0;
+            this._ori = container.offsetHeight > container.offsetWidth ? 'y' : 'x';
+            this._non_overflow = config.non_overflow || false;
+            this._hide_dot = config.hide_dot || false;
+            this._hide_bar = config.hide_bar || false;
+            this._disabled = config.disabled || false;
 
             let bar_container = document.createElement('div');
-            bar_container.style.cssText = 'position:relative; width:100%; height:100%;';
 
             let bar = document.createElement('div');
-            bar.style.cssText = `position:absolute; width:100%; height:100%; top:0; bottom:0;`;
-            if(_hide_bar) bar.style.display = 'none';
             bar_container.appendChild(bar);
 
             let dot = document.createElement('div');
-            dot.style.cssText = `position:absolute;`;
 
-            if(_hide_dot) dot.style.display = 'none';
             bar_container.appendChild(dot);
             container.appendChild(bar_container);
 
@@ -31,16 +27,16 @@ window.Util = (()=>{
 
             let dot_dragging = false;
             let dot_mdown = (e) => {
-                if(_disable) return;
+                if(this._disabled) return;
                 dot_dragging = true;
-                _origin.client = _ori === 'x' ? e.clientX : e.clientY;
+                _origin.client = this._ori === 'x' ? e.clientX : e.clientY;
                 _origin.value = this._value;
                 document.addEventListener('mousemove', dot_mmove);
                 document.addEventListener('mouseup', dot_mup);
                 (this.event.begin||function(){})();
             };
             let dot_mmove = (e) => {
-                let value = _origin.value + ((_ori === 'x' ? e.clientX : e.clientY) - _origin.client) / (_ori === 'x' ? bar_container.offsetWidth : bar_container.offsetHeight);
+                let value = _origin.value + ((this._ori === 'x' ? e.clientX : e.clientY) - _origin.client) / (this._bar_len - (!this._non_overflow ? 0 : this._dot_rad * 2));
                 this.set_value(value);
                 (this.event.drag||function(){})();
             };
@@ -53,8 +49,8 @@ window.Util = (()=>{
 
             dot.addEventListener('mousedown', dot_mdown);
             bar_container.addEventListener('mousedown', (e) => {
-                if(_disable || dot_dragging) return;
-                let value = e.offsetX / (_ori === 'x' ? bar_container.offsetWidth : bar_container.offsetHeight);
+                if(this._disabled || dot_dragging) return;
+                let value = !this._non_overflow ? e.offsetX / this._bar_len : (e.offsetX - this._dot_rad) / (this._bar_len - this._dot_rad * 2);
                 this.set_value(value);
                 (this.event.click||function(){})();
             });
@@ -70,31 +66,59 @@ window.Util = (()=>{
                 end: null,
                 click: null,
             };
-            this._value = _def;
-            this._ori = _ori;
             this.update();
         }
-        set_value(value, callback){
+        set_value(value, callback) {
+            if(Object.prototype.toString.call(value) !== '[object Number]') return;
             value = value > 1 ? 1 : (value < 0 ? 0 : value);
-            if(this._ori === 'x'){
-                this.elem.dot.style.left = `calc(${value * 100}% - ${this.elem.dot.offsetWidth / 2}px)`;
-                this.elem.dot.style.bottom = `calc(50% - ${this.elem.dot.offsetHeight / 2}px)`;
-                this.elem.bar.style.width = `${value*100}%`;
-            }else if(this._ori === 'y'){
-                this.elem.dot.style.bottom = `calc(${value * 100}% - ${this.elem.dot.offsetHeight / 2}px)`;
-                this.elem.dot.style.left = `calc(50% - ${this.elem.dot.offsetWidth / 2}px)`;
-                this.elem.bar.style.height = `${value*100}%`;
-            }
+            this.elem.dot.style[this._ori === 'x' ? 'left' : 'bottom'] = `calc(${value * 100 * (!this._non_overflow ? 1 : (1 - this._dot_rad * 2 / this._bar_len))}% - ${!this._non_overflow ? this._dot_rad : 0}px)`;
+            this.elem.bar.style[this._ori === 'x' ? 'width' : 'height'] = `${value*100}%`;
             this._value = value;
             (callback||function(){})();
         };
-        update(){
+        update() {
+            let bar_container_style = this.elem.bar_container.style;
+            bar_container_style.position = 'relative';
+            bar_container_style.height = '100%';
+            bar_container_style.width = '100%';
+            let bar_style = this.elem.bar.style;
+            bar_style.position = 'absolute';
+            bar_style.height = '100%';
+            bar_style.width = '100%';
+            bar_style.left = '0';
+            bar_style.bottom = '0';
+            bar_style.display = this._hide_bar ? 'none' : 'block';
+            let dot_style = this.elem.dot.style;
+            dot_style.position = 'absolute';
+            dot_style.left = `calc(50% - ${this.elem.dot.offsetWidth / 2}px)`;
+            dot_style.bottom = `calc(50% - ${this.elem.dot.offsetHeight / 2}px)`;
+            dot_style.display = this._hide_dot ? 'none' : 'block';
+            this._dot_rad = (this._ori === 'x' ? this.elem.dot.offsetWidth : this.elem.dot.offsetHeight) / 2;
+            this._bar_len = (this._ori === 'x' ? this.elem.bar_container.offsetWidth : this.elem.bar_container.offsetHeight);
             this.set_value(this._value);
         }
-        set value(value){
+        enable() {
+            this._disabled = false;
+        }
+        disable() {
+            this._disabled = true;
+        }
+        hide_dot() {
+            this._hide_dot = true;
+        }
+        show_dot() {
+            this._hide_dot = false;
+        }
+        hide_bar() {
+            this._hide_bar = true;
+        }
+        show_bar() {
+            this._hide_bar = false;
+        }
+        set value(value) {
             this.set_value(value)
         }
-        get value(){
+        get value() {
             return this._value;
         }
     }

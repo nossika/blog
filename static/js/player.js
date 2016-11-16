@@ -30,16 +30,16 @@ window.PlayerUtil = ((Util) => {
             document.body.appendChild(_player);
 
             let Bar = new Util.Bar(progress_bar, {
-                orientation: 'x',
                 default: 0.7,
-                overflow: true,
+                non_overflow: true,
+                disabled: true
             });
             Bar.elem.dot.style.background = 'red';
             Bar.elem.dot.style.height = '12px';
-            Bar.elem.dot.style.width = '16px';
+            Bar.elem.dot.style.width = '22px';
             Bar.elem.bar.style.background = 'blue';
             Bar.update();
-            setTimeout(()=>{Bar.value = 0.2},3000);
+            setTimeout(()=>{Bar.value = 0.2;Bar.enable();Bar.update();},6000);
             Bar.event.drag = ()=>{console.log(Bar.value,1)};
             Bar.event.click = ()=>{console.log(Bar.value,2)};
         },
