@@ -6,6 +6,7 @@ window.PlayerUtil = ((Util) => {
         list: null,
     };
     let _player = null, _audio = null;
+    let Bars = {};
     let PlayerUtil = {
         init_player: (config) => {
             PlayerUtil.player_render(config);
@@ -26,22 +27,35 @@ window.PlayerUtil = ((Util) => {
             if(_data.list.length){
                 PlayerUtil.play('random');
             }
-            let progress_bar = _player.querySelector('[data-part="progress_bar"]');
             document.body.appendChild(_player);
 
-            let Bar = new Util.Bar(progress_bar, {
-                default: 0.7,
-                non_overflow: true,
-                disabled: true
-            });
-            Bar.elem.dot.style.background = 'red';
-            Bar.elem.dot.style.height = '12px';
-            Bar.elem.dot.style.width = '22px';
-            Bar.elem.bar.style.background = 'blue';
-            Bar.update();
-            setTimeout(()=>{Bar.value = 0.2;Bar.enable();Bar.update();},6000);
-            Bar.event.drag = ()=>{console.log(Bar.value,1)};
-            Bar.event.click = ()=>{console.log(Bar.value,2)};
+            (()=>{
+                Bars.buffered = new Util.Bar(_player.querySelector('[data-part="progress_bar"]'), {
+                    hide_dot: true,
+                    disabled: true
+                });
+                Bars.buffered.elem.bar.style.cssText = 'background:green';
+                Bars.buffered.update();
+
+                Bars.progress = new Util.Bar(_player.querySelector('[data-part="progress_bar"]'), {
+                    hide_dot: true,
+                    disabled: true
+                });
+                Bars.progress.elem.bar.style.cssText = 'background:blue';
+                Bars.progress.update();
+
+                Bars.volume = new Util.Bar(_player.querySelector('[data-part="volume_bar"]'), {
+                    default: 0.8,
+                    hide_bar: true
+                });
+                Bars.volume.elem.dot.style.cssText = 'background:red;height:14px;width:12px;';
+                Bars.volume.update();
+                ['drag', 'click'].forEach((type)=>{
+                    Bars.volume.event[type] = () => {
+                        _audio.volume = Bars.volume.value;
+                    }
+                })
+            })();
         },
         player_events: (config) => {
             let next_btn = _player.querySelector('[data-control="next"]');
@@ -124,6 +138,7 @@ window.PlayerUtil = ((Util) => {
             let info = _player.querySelector('[data-part="info"]');
             info.querySelector('[data-info="title"]').innerText = _data.list[_data.current].title;
             info.querySelector('[data-info="author"]').innerText = _data.list[_data.current].author;
+            Bars.buffered.value = 0;
             PlayerUtil.update_progress();
         },
         onloaded: (e) => {
@@ -139,7 +154,9 @@ window.PlayerUtil = ((Util) => {
             for(let i = 0; i < buffer.length; i++){
                 loaded.push([buffer.start(i), buffer.end(i)])
             }
-            // console.log(loaded)
+            if(loaded.length){
+                Bars.buffered.value = loaded[0][1]/_audio.duration;
+            }
         },
         onend: (e) => {
             switch (_data.mode){
@@ -174,8 +191,7 @@ window.PlayerUtil = ((Util) => {
         update_progress: () => {
             let _progress_text = _player.querySelector('[data-part="progress_text"]');
             _progress_text.innerText = PlayerUtil.convert_sec(_audio.currentTime) + ' / ' + PlayerUtil.convert_sec(_audio.duration);
-            let _progress_bar = _player.querySelector('[data-part="progress_bar"]');
-            // _progress_bar.innerText = _audio.duration ? _audio.currentTime / _audio.duration : 0;
+            Bars.progress.value = _audio.duration ? _audio.currentTime / _audio.duration : 0;
         },
         convert_sec: (sec) => {
             if(!sec) sec = 0;
@@ -234,7 +250,7 @@ window.PlayerUtil = ((Util) => {
                 </div>
                 <div data-part="progress_bar">
                 </div>
-                <div data-part="volume">
+                <div data-part="volume_bar">
                 </div>
                 <audio data-part="audio"></audio>
             </div>

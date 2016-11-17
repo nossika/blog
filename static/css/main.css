@@ -73,4 +73,9 @@ button{
     width:300px;
     background: #eef;
 }
+#player [data-part="volume_bar"]{
+    height:100px;
+    width:10px;
+    background: #eef;
+}
 

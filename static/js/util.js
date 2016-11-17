@@ -10,6 +10,7 @@ window.Util = (()=>{
             this._hide_bar = config.hide_bar || false;
             this._disabled = config.disabled || false;
 
+            container.style.position = 'relative';
             let bar_container = document.createElement('div');
 
             let bar = document.createElement('div');
@@ -36,7 +37,7 @@ window.Util = (()=>{
                 (this.event.begin||function(){})();
             };
             let dot_mmove = (e) => {
-                let value = _origin.value + ((this._ori === 'x' ? e.clientX : e.clientY) - _origin.client) / (this._bar_len - (!this._non_overflow ? 0 : this._dot_rad * 2));
+                let value = _origin.value + ((this._ori === 'x' ? e.clientX  - _origin.client : _origin.client - e.clientY)) / (this._bar_len - (!this._non_overflow ? 0 : this._dot_rad * 2));
                 this.set_value(value);
                 (this.event.drag||function(){})();
             };
@@ -50,7 +51,8 @@ window.Util = (()=>{
             dot.addEventListener('mousedown', dot_mdown);
             bar_container.addEventListener('mousedown', (e) => {
                 if(this._disabled || dot_dragging) return;
-                let value = !this._non_overflow ? e.offsetX / this._bar_len : (e.offsetX - this._dot_rad) / (this._bar_len - this._dot_rad * 2);
+                let e_offset = this._ori === 'x' ? e.offsetX : this._bar_len - e.offsetY;
+                let value = !this._non_overflow ? e_offset / this._bar_len : (e_offset - this._dot_rad) / (this._bar_len - this._dot_rad * 2);
                 this.set_value(value);
                 (this.event.click||function(){})();
             });
@@ -78,7 +80,7 @@ window.Util = (()=>{
         };
         update() {
             let bar_container_style = this.elem.bar_container.style;
-            bar_container_style.position = 'relative';
+            bar_container_style.position = 'absolute';
             bar_container_style.height = '100%';
             bar_container_style.width = '100%';
             let bar_style = this.elem.bar.style;
@@ -237,6 +239,46 @@ window.Util = (()=>{
                 }
             })
         },
+        sync: (generator) => {
+            let g = generator();
+            let run = (promise) => {
+                if(!promise) return;
+                promise.then((value)=>{
+                    run(g.next(value).value);
+                });
+            };
+            run(g.next().value);
+        },
+        sync_fn: (fn) => {
+            return new Promise((res) => {
+                fn(res);
+            });
+        },
+        sync_timeout: (ms) => {
+            return new Promise((res) => {
+                setTimeout(()=>{
+                    res(+new Date())
+                }, ms);
+            });
+        },
+        sync_test: () => {
+            Util.sync(function*(){
+                console.log(1);
+                let a = yield Util.sync_timeout(3222);
+                console.log(2, a);
+                let b = yield Util.sync_timeout(2222);
+                console.log(3, b);
+                yield Util.sync_timeout(3222);
+                console.log(4, a - b);
+                let c = yield Util.sync_fn((res)=>{
+                    setTimeout(()=>{
+                        res('haha')
+                    },2000)
+                });
+                console.log(c);
+            });
+        }
     };
     return Util;
 })();
+
