@@ -1,10 +1,13 @@
 <% include _parts/header.ejs %>
-<nav>
-    <a class="nav-item<%= nav==='index'?' at':'' %>" href="/">首页</a>
-    <a class="nav-item<%= nav==='board'?' at':'' %>" href="/board">留言板</a>
-    <a class="nav-item<%= nav==='about'?' at':'' %>" href="/about">关于</a>
-    <canvas id="canvas_float"></canvas>
-</nav>
+<section id="nav-container">
+    <nav id="nav">
+        <a class="nav-item<%= nav==='index'?' at':'' %>" href="/">首页</a>
+        <a class="nav-item<%= nav==='board'?' at':'' %>" href="/board">留言板</a>
+        <a class="nav-item<%= nav==='about'?' at':'' %>" href="/about">关于</a>
+    </nav>
+    <canvas id="nav_canvas"></canvas>
+</section>
+
 <section id="content">
 
     <% if(nav === 'index') { %>
@@ -18,15 +21,9 @@
     <% } %>
 
 </section>
+
 <% include _parts/svg.ejs %>
-<script>
-    Util.init_nav();
-    PlayerUtil.get_list((list) => {
-        PlayerUtil.init_player({
-            id: 'player',
-            list: list
-        });
-    });
-    FloatUtil.init_canvas(document.querySelector('#canvas_float').getContext('2d'));
-</script>
+
+<script src="/js/main.js"></script>
+
 <% include _parts/footer.ejs %>

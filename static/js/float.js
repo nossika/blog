@@ -1,10 +1,10 @@
 window.FloatUtil = (() => {
     const dot_list = new Set();
     const _config = {
-        link_dis: 100,
-        click_dot: 4,
+        link_dis: 150,
+        click_dot: 3,
         v_max: 5,
-        max_dot: 20,
+        max_dot: 10,
         r: 1
     };
     const _style = {
@@ -33,7 +33,7 @@ window.FloatUtil = (() => {
         }
     }
     let FloatUtil = {
-        init_canvas: (ctx, config) => {
+        init_canvas: (ctx, config = {}) => {
             _ctx = ctx;
             FloatUtil.set_size();
             FloatUtil.canvas_event();
