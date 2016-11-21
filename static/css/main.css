@@ -1,5 +1,4 @@
 /* 默认样式 */
-
 *{
     margin: 0;
     padding: 0;
@@ -17,6 +16,9 @@ button{
 /* 通用*/
 .hide{
     display: none;
+}
+.show{
+    display: block;
 }
 
 /* btn */
@@ -44,6 +46,30 @@ button{
 }
 
 /* player */
+#player{
+    position: fixed;
+    bottom: 0;
+    left:0;
+    height:60px;
+    width:100%;
+    background: rgba(0,0,0,.8);
+}
+#player .container{
+    width:1000px;
+    height:100%;
+    margin:0 auto;
+}
+
+#player [data-part]{
+    float:left;
+}
+#player [data-info="cover"]{
+    width:50px;
+    height:50px;
+    background: #fff;
+    border: 2px solid #fff;
+    border-radius: 10%;
+}
 #player .control-btn{
     height:50px;
     width:50px;
@@ -51,31 +77,100 @@ button{
     stroke:#ddd;
     stroke-width: 25;
     transition: all .5s ease;
+    float:left;
 }
 #player .control-btn:hover{
     fill:#aaa;
     stroke:#fff;
 }
 
-#player .mode-btn{
+#player .audio-btn{
     height:30px;
     width:30px;
     fill:#ddd;
     stroke:none;
     transition: all .5s ease;
 }
-#player .mode-btn:hover{
+#player .audio-btn:hover{
     fill:#aaa;
 }
 
-#player [data-part="progress_bar"]{
+#player .info-bar {
     height:10px;
     width:300px;
-    background: #eef;
+    background: #fff;
+    position: relative;
 }
-#player [data-part="volume_bar"]{
+#player .info-bar .bar{
+    position:absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height:100%;
+}
+#player [data-bar="volume_bar"]{
     height:100px;
     width:10px;
     background: #eef;
 }
+
+#player [data-part="volume"]{
+    position:absolute;
+    height:200px;
+    width:100px;
+    right:400px;
+    bottom:0;
+}
+
+#player .list{
+    position:absolute;
+    right:0;
+    bottom:0;
+    width: 500px;
+    height: 200px;
+    background: rgba(0,0,0,.8);
+    color: #797979;
+}
+#player .list-title{
+    width: 100%;
+    height: 24px;
+    background: #000;
+}
+#player .list-content{
+    width:100%;
+    height: calc(100% - 24px);
+}
+#player .list-view{
+    width: calc(100% - 10px);
+    height: 100%;
+    overflow: hidden;
+    float:left;
+    position:relative;
+}
+#player .list-ul{
+    position:absolute;
+    top:0;
+    left:0;
+}
+#player .list-bar{
+    width: 10px;
+    height: 100%;
+    background: #111;
+    float: right;
+}
+
+#player .list-ul li{
+    list-style: none;
+    cursor: default;
+}
+
+#player .list-ul li.at{
+    color: #b1b1b1;
+    font-weight: bold;
+}
+
+#player .list-ul li:hover{
+    background: #213;
+}
+
 

@@ -5,7 +5,7 @@ window.PlayerUtil = ((Util) => {
         current: 0,
         list: null,
     };
-    let _player = null, _audio = null;
+    let _player = null, _audio = null, _list = null;
     let Bars = {};
     let PlayerUtil = {
         init_player: (config) => {
@@ -13,67 +13,67 @@ window.PlayerUtil = ((Util) => {
             PlayerUtil.player_events(config);
             PlayerUtil.switch_mode('normal');
             PlayerUtil.set_volume(0.8);
+            if(_data.list.length){
+                PlayerUtil.play('random');
+            }
         },
         player_render: (config) => {
             _player = document.createElement('section');
             _player.id = config.id || 'player';
             _player.innerHTML = PlayerUtil.player_html();
-            let ul = _player.querySelector('[data-part="list"]');
+            _list = _player.querySelector('[data-part="list"] ul');
             _data.list = config.list || [];
-            ul.innerHTML = PlayerUtil.list_html({
+            _list.innerHTML = PlayerUtil.list_html({
                 list: _data.list
             });
+            _list.addEventListener('dblclick', (e) => {
+                let elem = e.target;
+                while(elem.tagName!=='UL' && !elem.getAttribute('data-index')) elem = elem.parentNode;
+                let index = elem.getAttribute('data-index');
+                if(!index) return;
+                PlayerUtil.play_index(+index);
+            });
             _audio = _player.querySelector('[data-part="audio"]');
-            if(_data.list.length){
-                PlayerUtil.play('random');
-            }
             document.body.appendChild(_player);
 
-            (()=>{
-                Bars.buffered = new Util.Bar(_player.querySelector('[data-part="progress_bar"]'), {
-                    hide_dot: true,
-                    disabled: true
-                });
-                Bars.buffered.elem.bar.style.cssText = 'background:green';
-                Bars.buffered.update();
 
-                Bars.progress = new Util.Bar(_player.querySelector('[data-part="progress_bar"]'), {
-                    hide_dot: true,
-                    disabled: true
-                });
-                Bars.progress.elem.bar.style.cssText = 'background:blue';
-                Bars.progress.update();
-
-                Bars.volume = new Util.Bar(_player.querySelector('[data-part="volume_bar"]'), {
-                    default: 0.8,
-                    hide_bar: true
-                });
-                Bars.volume.elem.dot.style.cssText = 'background:red;height:14px;width:12px;';
-                Bars.volume.update();
-                ['drag', 'click'].forEach((type)=>{
-                    Bars.volume.event[type] = () => {
-                        _audio.volume = Bars.volume.value;
-                    }
-                })
-            })();
         },
         player_events: (config) => {
-            let next_btn = _player.querySelector('[data-control="next"]');
-            next_btn.addEventListener('click', (e) => {
+            PlayerUtil.init_bars();
+
+            _player.querySelector('[data-control="next"]').addEventListener('click', (e) => {
                 PlayerUtil.play(_data.mode !== 'random' ? 'next' : 'random');
             });
-            let play_btn = _player.querySelector('[data-control="play"]');
-            play_btn.addEventListener('click', (e) => {
+            _player.querySelector('[data-control="play"]').addEventListener('click', (e) => {
                 PlayerUtil[_audio.paused ? 'audio_play' : 'audio_pause']();
             });
-            let pre_btn = _player.querySelector('[data-control="pre"]');
-            pre_btn.addEventListener('click', (e) => {
+            _player.querySelector('[data-control="pre"]').addEventListener('click', (e) => {
                 PlayerUtil.play(_data.mode !== 'random' ? 'pre' : 'random');
             });
-
-            let mode_btn = _player.querySelector('[data-mode]');
-            mode_btn.addEventListener('click', (e) => {
+            _player.querySelector('[data-mode]').addEventListener('click', (e) => {
                 PlayerUtil.switch_mode();
+            });
+
+            _player.querySelector('[data-control="toggle_volume"]').addEventListener('click', (e) => {
+                let elem = _player.querySelector('[data-part="volume"]');
+                elem.classList[elem.classList.contains('hide')?'remove':'add']('hide');
+                Bars.volume.update();
+            });
+            _player.querySelector('[data-control="toggle_list"]').addEventListener('click', (e) => {
+                let elem = _player.querySelector('[data-part="list"]');
+                elem.classList[elem.classList.contains('hide')?'remove':'add']('hide');
+                if(!Bars.list.elem.dot.style.height){
+                    let view_h = _player.querySelector('.list-view').offsetHeight,
+                        ul_h = _player.querySelector('.list-ul').offsetHeight;
+
+                    Bars.list.elem.dot.style.height = view_h/ul_h * 100 + '%';
+                    if(ul_h <= view_h) Bar.hide_dot();
+                }
+                Bars.list.update();
+            });
+            _player.querySelector('[data-control="hide_list"]').addEventListener('click', (e) => {
+                let elem = _player.querySelector('[data-part="list"]');
+                elem.classList.add('hide');
             });
 
             _audio.addEventListener('loadstart', (e) => {
@@ -91,6 +91,50 @@ window.PlayerUtil = ((Util) => {
             _audio.addEventListener('ended', (e) => {
                 PlayerUtil.onend(e);
             });
+
+        },
+        init_bars: () => {
+            Bars.buffered = new Util.Bar(_player.querySelector('[data-bar="buffered_bar"]'), {
+                hide_dot: true,
+                disabled: true
+            });
+            Bars.buffered.elem.bar.style.cssText = 'background:green';
+            Bars.buffered.update();
+
+            Bars.progress = new Util.Bar(_player.querySelector('[data-bar="progress_bar"]'), {
+                hide_dot: true,
+                disabled: true
+            });
+            Bars.progress.elem.bar.style.cssText = 'background:blue';
+            Bars.progress.update();
+
+            Bars.volume = new Util.Bar(_player.querySelector('[data-bar="volume_bar"]'), {
+                default: 0.8,
+                hide_bar: true
+            });
+            Bars.volume.elem.dot.style.cssText = 'cursor:pointer;background:red;height:14px;width:12px;';
+            Bars.volume.update();
+            Bars.volume.event.change = (value) => {
+                _audio.volume = value;
+            };
+            Bars.list = new Util.Bar(_player.querySelector('[data-bar="list_bar"]'), {
+                default: 1,
+                hide_bar: true,
+                non_overflow: true
+            });
+            Bars.list.elem.dot.style.cssText = 'background:red;width:100%;';
+            Bars.list.update();
+
+            let view = _player.querySelector('.list-view'),
+                ul = _player.querySelector('.list-ul');
+            ul.addEventListener('mousewheel', (e) => {
+                let move = e.deltaY > 0 ? 50 : -50;
+                Bars.list.value -= move/(ul.offsetHeight - view.offsetHeight);
+            });
+            Bars.list.event.change = (value, type) => {
+                let top = (1 - value) * (ul.offsetHeight - view.offsetHeight)
+                ul.style.top = -top + 'px';
+            };
 
         },
         play: (type) => {
@@ -120,8 +164,25 @@ window.PlayerUtil = ((Util) => {
             PlayerUtil.play_index(index);
         },
         play_index: (index) => {
-            _audio.src = _data.list[index].path;
             _data.current = index;
+            ['innerText','title'].forEach((prop) => {
+                _player.querySelector('[data-info="title"]')[prop] = _data.list[_data.current].title;
+                _player.querySelector('[data-info="author"]')[prop] = _data.list[_data.current].author;
+            });
+            let cover = _player.querySelector('[data-info="cover"]');
+            cover.src = _data.list[_data.current].cover;
+            cover.onerror = (e) => {
+                cover.src = '/img/default.png';
+                cover.onerror = null;
+            };
+            _audio.src = _data.list[index].path;
+            [].slice.call(_list.querySelectorAll('[data-index]')).forEach((li) => {
+                li.classList.remove('at');
+                if(+li.getAttribute('data-index') === index) {
+                    li.classList.add('at');
+                }
+            });
+            Bars.buffered.value = 0;
             _audio.load();
         },
         audio_play: () => {
@@ -135,10 +196,6 @@ window.PlayerUtil = ((Util) => {
             _audio.pause();
         },
         onbegin: (e) => {
-            let info = _player.querySelector('[data-part="info"]');
-            info.querySelector('[data-info="title"]').innerText = _data.list[_data.current].title;
-            info.querySelector('[data-info="author"]').innerText = _data.list[_data.current].author;
-            Bars.buffered.value = 0;
             PlayerUtil.update_progress();
         },
         onloaded: (e) => {
@@ -189,7 +246,7 @@ window.PlayerUtil = ((Util) => {
             _audio.volume = value;
         },
         update_progress: () => {
-            let _progress_text = _player.querySelector('[data-part="progress_text"]');
+            let _progress_text = _player.querySelector('[data-info="progress_text"]');
             _progress_text.innerText = PlayerUtil.convert_sec(_audio.currentTime) + ' / ' + PlayerUtil.convert_sec(_audio.duration);
             Bars.progress.value = _audio.duration ? _audio.currentTime / _audio.duration : 0;
         },
@@ -213,15 +270,11 @@ window.PlayerUtil = ((Util) => {
                 }
             });
         },
+
         player_html: () => {
             let html = `
             <div>
-                <ul data-part="list"></ul>
-                <div data-part="info">
-                    <div data-info="cover"></div>
-                    <p data-info="title"></p>
-                    <p data-info="author"></p>
-                </div>
+            <div class="container">
                 <div data-part="control">
                     <div class="control-btn" data-control="pre" title="上一首 (ctrl + ←)">
                         <svg viewbox="0 0 1024 1024">
@@ -239,20 +292,57 @@ window.PlayerUtil = ((Util) => {
                         </svg>
                     </div>
                 </div>
+                <div data-part="cover">
+                    <img data-info="cover" src=""/>
+                </div>
+                <div data-part="main">
+                    <span data-info="title"></span>
+                    <span data-info="author"></span>
+                    <div data-info="progress_text"></div>
+                    <div class="info-bar">
+                        <div class="bar" data-bar="buffered_bar"></div>
+                        <div class="bar" data-bar="progress_bar"></div>
+                    </div>
+                </div>
+                <div data-part="toggle_volume">
+                    <div class="audio-btn" data-control="toggle_volume">
+                        <svg viewbox="0 0 1024 1024">
+                            <use xlink:href="#svgpath_audio_volume"/>
+                        </svg>
+                    </div>
+                </div>
                 <div data-part="mode">
-                    <div class="mode-btn" data-mode="" title="">
+                    <div class="audio-btn" data-mode="" title="">
                         <svg viewbox="0 0 1024 1024">
                             <use xlink:href="#svgpath_audio_normal"/>
                         </svg>
                     </div>
                 </div>
-                <div data-part="progress_text">
+                <div data-part="toggle_list" title="播放列表">
+                    <div class="audio-btn" data-control="toggle_list">
+                        <svg viewbox="0 0 1024 1024">
+                            <use xlink:href="#svgpath_audio_list"/>
+                        </svg>
+                    </div>
+                </div>  
+                <div data-part="volume" class="hide">
+                    <div data-bar="volume_bar"></div>
                 </div>
-                <div data-part="progress_bar">
-                </div>
-                <div data-part="volume_bar">
-                </div>
+                <div data-part="list" class="list hide">
+                    <div class="list-title">
+                        <span>title</span>
+                        <span>author</span>
+                        <span data-control="hide_list">X</span>
+                    </div>
+                    <div class="list-content">
+                        <div class="list-view">
+                            <ul class="list-ul"></ul>
+                        </div>
+                        <div data-bar="list_bar" class="list-bar"></div> 
+                    </div>
+                </div>  
                 <audio data-part="audio"></audio>
+            </div>
             </div>
             `;
             return html;
@@ -261,7 +351,7 @@ window.PlayerUtil = ((Util) => {
             let html = '';
             params.list.forEach((info, index) => {
                 html += `
-                <li data-index="${index}">${info.title} - ${info.author}</li>
+                <li data-index="${index}"><span class="title">${info.title}</span> - <span class="author">${info.author}</span></li>
                 `
             });
             return html;

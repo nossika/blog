@@ -10,7 +10,6 @@ window.Util = (()=>{
             this._hide_bar = config.hide_bar || false;
             this._disabled = config.disabled || false;
 
-            container.style.position = 'relative';
             let bar_container = document.createElement('div');
 
             let bar = document.createElement('div');
@@ -26,15 +25,16 @@ window.Util = (()=>{
                 value: 0,
             };
 
-            let dot_dragging = false;
             let dot_mdown = (e) => {
                 if(this._disabled) return;
-                dot_dragging = true;
                 _origin.client = this._ori === 'x' ? e.clientX : e.clientY;
                 _origin.value = this._value;
                 document.addEventListener('mousemove', dot_mmove);
                 document.addEventListener('mouseup', dot_mup);
                 (this.event.begin||function(){})();
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
             };
             let dot_mmove = (e) => {
                 let value = _origin.value + ((this._ori === 'x' ? e.clientX  - _origin.client : _origin.client - e.clientY)) / (this._bar_len - (!this._non_overflow ? 0 : this._dot_rad * 2));
@@ -42,7 +42,6 @@ window.Util = (()=>{
                 (this.event.drag||function(){})();
             };
             let dot_mup = (e) => {
-                dot_dragging = false;
                 document.removeEventListener('mousemove', dot_mmove);
                 document.removeEventListener('mouseup', dot_mup);
                 (this.event.end||function(){})();
@@ -50,10 +49,11 @@ window.Util = (()=>{
 
             dot.addEventListener('mousedown', dot_mdown);
             bar_container.addEventListener('mousedown', (e) => {
-                if(this._disabled || dot_dragging) return;
+                if(this._disabled) return;
                 let e_offset = this._ori === 'x' ? e.offsetX : this._bar_len - e.offsetY;
                 let value = !this._non_overflow ? e_offset / this._bar_len : (e_offset - this._dot_rad) / (this._bar_len - this._dot_rad * 2);
                 this.set_value(value);
+                dot_mdown(e);
                 (this.event.click||function(){})();
             });
 
@@ -67,20 +67,24 @@ window.Util = (()=>{
                 drag: null,
                 end: null,
                 click: null,
+                change: null
             };
             this.update();
         }
-        set_value(value, callback) {
+        set_value(value, type) {
             if(Object.prototype.toString.call(value) !== '[object Number]') return;
             value = value > 1 ? 1 : (value < 0 ? 0 : value);
             this.elem.dot.style[this._ori === 'x' ? 'left' : 'bottom'] = `calc(${value * 100 * (!this._non_overflow ? 1 : (1 - this._dot_rad * 2 / this._bar_len))}% - ${!this._non_overflow ? this._dot_rad : 0}px)`;
             this.elem.bar.style[this._ori === 'x' ? 'width' : 'height'] = `${value*100}%`;
+            if(this._value !== value) {
+                (this.event.change||function(){})(value, type)
+            };
             this._value = value;
-            (callback||function(){})();
         };
         update() {
+            this._ori = this.elem.bar_container.offsetHeight > this.elem.bar_container.offsetWidth ? 'y' : 'x';
             let bar_container_style = this.elem.bar_container.style;
-            bar_container_style.position = 'absolute';
+            bar_container_style.position = 'relative';
             bar_container_style.height = '100%';
             bar_container_style.width = '100%';
             let bar_style = this.elem.bar.style;
@@ -118,7 +122,7 @@ window.Util = (()=>{
             this._hide_bar = false;
         }
         set value(value) {
-            this.set_value(value)
+            this.set_value(value, 'manual')
         }
         get value() {
             return this._value;
