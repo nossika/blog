@@ -1,7 +1,5 @@
 (()=>{
     Util.init_nav();
-
-    return;
     PlayerUtil.get_list((list) => {
         PlayerUtil.init_player({
             id: 'player',

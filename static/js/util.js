@@ -171,7 +171,17 @@ window.Util = (()=>{
                     part: part
                 },
                 callback: (data, status)=>{
-                    container.innerHTML = data;
+                    let temp_html = document.createElement('div');
+                    temp_html.innerHTML = data;
+                    let scripts = [];
+                    [].slice.call(temp_html.querySelectorAll('script')).forEach((script) => {
+                        scripts.push(script.innerText);
+                        script.parentNode.removeChild(script);
+                    });
+                    container.innerHTML = temp_html.innerHTML;
+                    scripts.forEach((script) => {
+                        eval(script);
+                    });
                     (cb||function(){})(status);
                 }
             });

@@ -1,8 +1,8 @@
 window.GraffitiUtil = (() => {
     let main_data = [];
-    let paint_data = {};
+    let paint_data = null;
     let [_ctx, _ctx_w, _ctx_h] = [null, 0, 0];
-    let [_type, width, _stroke, _fill] = ['line', 2, 'rgba(33,33,33,0.01)', '#adadad'];
+    let [_type, width, _stroke, _fill] = ['line', 2, 'rgba(33,33,33,0.5)', '#adadad'];
     let GraffitiUtil = {
         init_editor: (ctx) => {
             _ctx = ctx;
@@ -15,15 +15,18 @@ window.GraffitiUtil = (() => {
             _ctx_h = _ctx.canvas.offsetHeight;
             _ctx.canvas.width = _ctx_w;
             _ctx.canvas.height = _ctx_h;
+            GraffitiUtil.draw_canvas(main_data, _ctx)
         },
         canvas_event: () => {
             _ctx.canvas.addEventListener('mousedown', (e) => {
                 e.preventDefault();
-                paint_data.type = _type;
-                paint_data.width = width;
-                paint_data.stroke = _stroke;
-                paint_data.fill = _fill;
-                paint_data.points = [];
+                paint_data = {
+                    type: _type,
+                    width: width,
+                    stroke: _stroke,
+                    fill: _fill,
+                    points: []
+                };
                 GraffitiUtil.painting(e);
                 _ctx.canvas.addEventListener('mousemove', GraffitiUtil.painting);
                 document.addEventListener('mouseup', GraffitiUtil.stop_painting);
@@ -39,7 +42,12 @@ window.GraffitiUtil = (() => {
             _ctx.canvas.removeEventListener('mousemove', GraffitiUtil.painting);
             document.removeEventListener('mouseup', GraffitiUtil.stop_painting);
         },
+        undo_paint: () => {
+            main_data.pop();
+            GraffitiUtil.draw_canvas(main_data, _ctx);
+        },
         draw_canvas: (main_data, ctx) => {
+            ctx.clearRect(0,0,_ctx.canvas.width,_ctx.canvas.height);
             main_data.forEach((paint_data) => {
                 _draw_fn[paint_data.type](paint_data, ctx);
             })
@@ -64,3 +72,4 @@ window.GraffitiUtil = (() => {
     window.main_data = main_data;
     return GraffitiUtil;
 })();
+

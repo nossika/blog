@@ -1,10 +1,11 @@
 window.FloatUtil = (() => {
     const dot_list = new Set();
     const _config = {
-        link_dis: 150,
+        link_dis: 100,
         click_dot: 3,
-        v_max: 5,
-        max_dot: 10,
+        v_max: 6,
+        max_dot: 20,
+        border_extend: 30,
         r: 1
     };
     const _style = {
@@ -69,8 +70,8 @@ window.FloatUtil = (() => {
                 dot_list.add(new Dot({
                     x: x,
                     y: y,
-                    v_x: FloatUtil.random_num(_config.v_max, 1) * (Math.random() > 0.5 ? -1 : 1) / 10,
-                    v_y:FloatUtil.random_num(_config.v_max, 1) * (Math.random() > 0.5 ? -1 : 1) / 10,
+                    v_x: FloatUtil.random_num(_config.v_max, 2) * (Math.random() > 0.5 ? -1 : 1) / 10,
+                    v_y:FloatUtil.random_num(_config.v_max, 2) * (Math.random() > 0.5 ? -1 : 1) / 10,
                     r: _config.r
                 }))
             }
@@ -85,10 +86,17 @@ window.FloatUtil = (() => {
             requestAnimationFrame(animation)
         },
         update: () => {
+            let [top, right, bottom, left] = [
+                0 - _config.border_extend,
+                _ctx_w + _config.border_extend,
+                _ctx_h + _config.border_extend,
+                0 - _config.border_extend,
+            ];
+
             dot_list.forEach((dot) => {
                 dot.x = dot.x + dot.v_x;
                 dot.y = dot.y + dot.v_y;
-                if(dot.x < 0 || dot.x > _ctx_w || dot.y < 0 || dot.y > _ctx_h){
+                if(dot.x < left || dot.x > right || dot.y < top || dot.y > bottom){
                     dot_list.delete(dot);
                     if(dot_list.size > _config.max_dot) return;
                     FloatUtil.add_random_dot();
