@@ -1,5 +1,7 @@
 (()=>{
     Util.init_nav();
+
+    return;
     PlayerUtil.get_list((list) => {
         PlayerUtil.init_player({
             id: 'player',
@@ -29,4 +31,21 @@
         FloatUtil.canvas_mouseleave();
     })
 })();
+
+
+document.addEventListener('keyup', (e) => {
+    if(e.keyCode === 37){
+        let canvas = document.querySelector('#nav_canvas');
+        let data = canvas.toDataURL();
+        let div = document.createElement('div');
+        div.innerHTML = '<a id="a" href="'+data+'" download>fwefew</a>'
+        document.body.appendChild(div);
+        let a = document.querySelector('#a');
+        a.click();
+        a.parentNode.removeChild(a);
+    }
+});
+
+
+
 

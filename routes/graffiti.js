@@ -2,8 +2,8 @@
 const util = require('../util/main');
 
 module.exports = (router) => {
-    router.get('/board', function* (){
-        let html = util.render('main.ejs', {nav: 'board'});
+    router.get('/graffiti', function* (){
+        let html = util.render('main.ejs', {nav: 'graffiti'});
         this.body = html;
     })
 };

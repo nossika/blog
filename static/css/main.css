@@ -60,6 +60,10 @@ button{
     display: block;
     padding: 10px;
 }
+#nav-container .nav-item.at{
+    font-weight: bold;
+}
+
 #nav{
     position:absolute;
     top:0;
@@ -204,4 +208,10 @@ button{
     background: #213;
 }
 
+/* graffiti */
+#graffiti_editor {
+    width: 100%;
+    height: 100%;
+    background: #dfd;
+}
 

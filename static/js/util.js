@@ -274,9 +274,9 @@ window.Util = (()=>{
                 console.log(3, b);
                 yield Util.sync_timeout(3222);
                 console.log(4, a - b);
-                let c = yield Util.sync_fn((res)=>{
+                let c = yield Util.sync_fn((next)=>{
                     setTimeout(()=>{
-                        res('haha')
+                        next('haha')
                     },2000)
                 });
                 console.log(c);
