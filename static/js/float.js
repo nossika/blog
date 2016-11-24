@@ -8,6 +8,7 @@ window.FloatUtil = (() => {
         border_extend: 30,
         r: 1
     };
+    Object.seal(_config);
     const _style = {
         line: {
             r: 1,
@@ -34,7 +35,7 @@ window.FloatUtil = (() => {
         }
     }
     let FloatUtil = {
-        init_canvas: (ctx, config = {}) => {
+        init_float: (ctx, config = {}) => {
             _ctx = ctx;
             FloatUtil.set_size();
             FloatUtil.canvas_event();
@@ -104,12 +105,12 @@ window.FloatUtil = (() => {
             });
         },
         render: () => {
-            dot_list.forEach((dot) => {
+            dot_list.forEach((dot) => {//todo:优化循环
                 _ctx.beginPath();
                 _ctx.moveTo(dot.x, dot.y);
                 _ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
                 _ctx.closePath();
-                _ctx.fillStyle = `rgba(${_style.dot.r},${_style.dot.g},${_style.dot.b},${_style.dot.a})`;
+                _ctx.fillStyle = `rgba(${_style.dot.r},${_style.dot.g},${_style.dot.b},${_style.dot.a || 1})`;
                 _ctx.fill();
                 dot_list.forEach((other_dot) => {
                     if(other_dot === dot) return;
@@ -167,6 +168,12 @@ window.FloatUtil = (() => {
                 v_y: v_y,
                 r: _config.r
             }));
+        },
+        set_style: (style) => {
+            style = JSON.parse(JSON.stringify(style));
+            for(let prop in style){
+                _style[prop] = style[prop];
+            }
         },
         set_size: (e) => {
             if(!_ctx) return;

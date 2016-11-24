@@ -3,6 +3,10 @@
     margin: 0;
     padding: 0;
 }
+body{
+    background: url('/img/texture.png');
+    transition: background-color 2s ease-in;
+}
 
 html{
     font-family: 'Microsoft YaHei', Helvetica, Arial, monospace;
@@ -20,7 +24,6 @@ button{
 .show{
     display: block;
 }
-
 
 /* btn */
 .btn{
@@ -52,7 +55,7 @@ button{
     left: 0;
     width: 150px;
     height: 100%;
-    background: rgba(222,222,222,.6);
+    background: rgba(255,255,255,.05);
     z-index: 100;
 }
 #nav-container .nav-item{
@@ -212,6 +215,5 @@ button{
 #graffiti_editor {
     width: 100%;
     height: 100%;
-    background: #dfd;
 }
 

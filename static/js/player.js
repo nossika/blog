@@ -36,7 +36,6 @@ window.PlayerUtil = ((Util) => {
             _audio = _player.querySelector('[data-part="audio"]');
             document.body.appendChild(_player);
 
-
         },
         player_events: (config) => {
             PlayerUtil.init_bars();
@@ -67,7 +66,7 @@ window.PlayerUtil = ((Util) => {
                         ul_h = _player.querySelector('.list-ul').offsetHeight;
 
                     Bars.list.elem.dot.style.height = view_h/ul_h * 100 + '%';
-                    if(ul_h <= view_h) Bar.hide_dot();
+                    if(ul_h <= view_h) Bars.list.hide_dot();
                 }
                 Bars.list.update();
             });
@@ -128,6 +127,7 @@ window.PlayerUtil = ((Util) => {
             let view = _player.querySelector('.list-view'),
                 ul = _player.querySelector('.list-ul');
             ul.addEventListener('mousewheel', (e) => {
+                if(ul.offsetHeight <= view.offsetHeight) return;
                 let move = e.deltaY > 0 ? 50 : -50;
                 Bars.list.value -= move/(ul.offsetHeight - view.offsetHeight);
             });

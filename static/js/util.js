@@ -1,6 +1,5 @@
 "use strict";
 window.Util = (()=>{
-    const server = 'http://localhost:7869';
     class Bar {
         constructor(container, config = {}) {
             this._value = config.default || 0;
@@ -128,65 +127,13 @@ window.Util = (()=>{
             return this._value;
         }
     }
-    let Util = {
-        init_nav: () => {
-            let nav_items = [].slice.call(document.querySelectorAll('nav .nav-item'));
-            nav_items.forEach((item) => {
-                if(item.classList.contains('at')){
-                    let href = item.getAttribute('href'),
-                        name = href.replace('/','');
-                    history.replaceState({
-                        nav: name
-                    }, name, href)
-                }
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if(item.classList.contains('at')) return;
-                    nav_items.forEach((item) => {
-                        item.classList.remove('at');
-                    });
-                    item.classList.add('at');
-                    let href = item.getAttribute('href'),
-                        name = href.replace('/','');
-                    Util.render_part(name, () => {
-                        history.pushState({
-                            nav: name
-                        }, name, href)
-                    });
-                });
 
-            });
-            window.addEventListener('popstate', (e) => {
-                let state = e.state;
-                Util.render_part(state.nav);
-            });
-        },
-        render_part: (part, cb) => {
-            part = part || 'index';
-            let container = document.querySelector('#content');
-            // waiting animation;
-            Util.ajax({
-                url: `${server}/tool/view_part`,
-                data: {
-                    part: part
-                },
-                callback: (data, status)=>{
-                    let temp_html = document.createElement('div');
-                    temp_html.innerHTML = data;
-                    let scripts = [];
-                    [].slice.call(temp_html.querySelectorAll('script')).forEach((script) => {
-                        scripts.push(script.innerText);
-                        script.parentNode.removeChild(script);
-                    });
-                    container.innerHTML = temp_html.innerHTML;
-                    scripts.forEach((script) => {
-                        eval(script);
-                    });
-                    (cb||function(){})(status);
-                }
-            });
-        },
+    let Util = {
         Bar: Bar,
+        hex_to_rgb: (hex) => {
+            hex = (hex + '').replace('#','');
+            return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)]
+        },
         ajax: (config) => {
             let method = (config.method || 'GET').toUpperCase();
             let url = config.url;
