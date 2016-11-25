@@ -100,22 +100,22 @@
         '#B9887D',
     ];
 
-    PlayerUtil.get_list((list) => {
-        PlayerUtil.init_player({
-            id: 'player',
-            list: list
-        });
-    });
-
-    FloatUtil.init_float(document.querySelector('#nav_canvas').getContext('2d'),{
-        
-    });
+    // PlayerUtil.get_list((list) => {
+    //     PlayerUtil.init_player({
+    //         id: 'player',
+    //         list: list
+    //     });
+    // });
+    //
+    // FloatUtil.init_float(document.querySelector('#nav_canvas').getContext('2d'),{
+    //
+    // });
 
     setTimeout(()=>{
         fns.init_nav();
     },0);
-
     let nav = document.querySelector('#nav');
+    nav.style.display ='none'
     let nav_canvas = document.querySelector('#nav_canvas');
     nav.addEventListener('click', (e) => {
         if(e.target === nav_canvas) return;
