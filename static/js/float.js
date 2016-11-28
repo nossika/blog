@@ -6,7 +6,7 @@ window.FloatUtil = (() => {
         v_max: 6,
         max_dot: 20,
         border_extend: 30,
-        r: 1
+        r: 1.2
     };
     Object.seal(_config);
     const _style = {
@@ -15,7 +15,7 @@ window.FloatUtil = (() => {
             g: 2,
             b: 100
         },
-        line_w: 0.3,
+        line_w: 0.4,
         dot: {
             r: 100,
             g: 50,
@@ -105,14 +105,16 @@ window.FloatUtil = (() => {
             });
         },
         render: () => {
-            dot_list.forEach((dot) => {//todo:优化循环
+            let temp_list = new Set();
+            dot_list.forEach((dot) => {
                 _ctx.beginPath();
                 _ctx.moveTo(dot.x, dot.y);
                 _ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
                 _ctx.closePath();
-                _ctx.fillStyle = `rgba(${_style.dot.r},${_style.dot.g},${_style.dot.b},${_style.dot.a || 1})`;
+                _ctx.fillStyle = `rgba(${_style.dot.r},${_style.dot.g},${_style.dot.b},${1})`;
                 _ctx.fill();
-                dot_list.forEach((other_dot) => {
+                temp_list.add(dot);
+                temp_list.forEach((other_dot) => {
                     if(other_dot === dot) return;
                     let dis = Math.pow(Math.pow(dot.x - other_dot.x, 2) + Math.pow(dot.y - other_dot.y, 2), 1/2)
                     if(dis > _config.link_dis) return;
@@ -120,7 +122,7 @@ window.FloatUtil = (() => {
                     _ctx.moveTo(dot.x, dot.y);
                     _ctx.lineTo(other_dot.x, other_dot.y);
                     _ctx.closePath();
-                    _ctx.strokeStyle = `rgba(${_style.line.r},${_style.line.g},${_style.line.b},${1 - dis/_config.link_dis})`;
+                    _ctx.strokeStyle = `rgba(${_style.line.r},${_style.line.g},${_style.line.b},${(1 - dis/_config.link_dis)*2})`;
                     _ctx.lineWidth = _style.line_w;
                     _ctx.stroke();
                 })

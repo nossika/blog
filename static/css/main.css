@@ -5,7 +5,8 @@
 }
 body{
     background: url('/img/texture.png');
-    transition: background-color 2s ease-in;
+    transition: background-color 1.2s ease-in;
+    padding-left: 150px;
 }
 
 html{
@@ -48,6 +49,7 @@ button{
     padding: 0.3rem 0.8rem;
     border-radius: 0.2rem;
 }
+
 /* nav */
 #nav-container{
     position: fixed;
@@ -55,18 +57,8 @@ button{
     left: 0;
     width: 150px;
     height: 100%;
-    background: rgba(255,255,255,.05);
     z-index: 100;
 }
-#nav-container .nav-item{
-    cursor: pointer;
-    display: block;
-    padding: 10px;
-}
-#nav-container .nav-item.at{
-    font-weight: bold;
-}
-
 #nav{
     position:absolute;
     top:0;
@@ -83,6 +75,50 @@ button{
     height: 100%;
     z-index: 100;
 }
+#nav .nav-mask-top{
+    width: 100%;
+    height:80px;
+    background: rgba(255,255,255,0.25);
+}
+#nav .nav-mask-bottom{
+    width: 100%;
+    height:100%;
+    background: rgba(255,255,255,0.25);
+}
+#nav .nav-item{
+    cursor: pointer;
+    display: block;
+    letter-spacing: 0.8rem;
+    font-size: 1.3rem;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    padding: 10px;
+    background: rgba(255,255,255,0.25);
+    position: relative;
+    transition: padding .3s ease;
+}
+#nav .nav-item:hover{
+    padding-left: 2px;
+}
+
+#nav .nav-item.at{
+    background: rgba(255,255,255,0);
+}
+
+#nav .nav-item .color{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 0;
+    height: 100%;
+    display: block;
+    transition: width .3s ease;
+}
+#nav .nav-item:hover .color{
+    width: 8px;
+}
+
 /* player */
 #player{
     position: fixed;
@@ -90,7 +126,8 @@ button{
     left:0;
     height:60px;
     width:100%;
-    background: rgba(0,0,0,.8);
+    background: rgba(44,44,44,1);
+    z-index: 102;
 }
 #player .container{
     width:1000px;
@@ -212,8 +249,8 @@ button{
 }
 
 /* graffiti */
-#graffiti_editor {
+#graffiti-editor {
     width: 100%;
-    height: 100%;
+    height: 500px;
 }
 

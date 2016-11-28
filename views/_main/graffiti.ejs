@@ -1,14 +1,19 @@
-<button class="btn btn-lg">asd</button>
-<button class="btn btn-sm">asvgd</button>
+
 
 bbbb
 
 <div>
-    <canvas id="graffiti_editor"></canvas>
+    <canvas id="graffiti-editor"></canvas>
+</div>
+<div class="graffiti-controller">
+    <button data-action="shape" class="btn btn-lg">形状</button>
+    <button data-action="stroke" class="btn btn-sm">线条</button>
+    <button data-action="fill" class="btn btn-sm">填充</button>
+    <button data-action="line" class="btn btn-sm">粗细</button>
+    <button data-action="undo" class="btn btn-sm">撤销</button>
+    <button data-action="download" class="btn btn-sm">下载</button>
+    <button data-action="submit" class="btn btn-sm">提交</button>
 </div>
 
 
-
-<script>
-    window.GraffitiUtil.init_editor(document.querySelector('#graffiti_editor').getContext('2d'));
-</script>
+<script src="/js/graffiti.js"></script>

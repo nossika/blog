@@ -3,58 +3,64 @@
 
     const fns = {
         init_nav: () => {
-            let nav_items = [].slice.call(document.querySelectorAll('nav .nav-item'));
+            let nav = document.querySelector('#nav'),
+                at = nav.getAttribute('data-at');
+            let nav_items = [].slice.call(document.querySelectorAll('#nav .nav-item'));
             nav_items.forEach((item, index) => {
-                if(item.classList.contains('at')){
-                    let href = item.getAttribute('href'),
-                        name = href.replace('/','');
-                    fns.set_theme(item.getAttribute('data-theme'));
+                let href = item.getAttribute('href'),
+                    name = item.getAttribute('data-nav');
+                let theme = item.getAttribute('data-theme');
+                if(name === at) {
+                    fns.switch_nav(name);
                     history.replaceState({
                         nav: name
                     }, name, href)
                 }
+
+                let theme_preview = item.querySelector('.color');
+                theme_preview.style.background = theme;
+
                 item.addEventListener('click', (e) => {
                     e.preventDefault();
-                    if(item.classList.contains('at')) return;
-                    fns.set_theme(item.getAttribute('data-theme'));
-
-                    nav_items.forEach((item) => {
-                        item.classList.remove('at');
-                    });
-                    item.classList.add('at');
+                    let target = e.target;
+                    while(!target.getAttribute('data-nav')){
+                        target = target.parentNode;
+                    }
+                    if(target.classList.contains('at')) return;
                     let href = item.getAttribute('href'),
-                        name = href.replace('/','');
+                        name = item.getAttribute('data-nav');
+                    fns.switch_nav(name);
                     fns.render_part(name, () => {
                         history.pushState({
                             nav: name
                         }, name, href)
                     });
                 });
-                item.addEventListener('mouseenter', (e) => {
-                    console.log(e.target,1)
-                });
-                item.addEventListener('mouseleave', (e) => {
-                    console.log(e.target,2)
-                });
-
             });
             window.addEventListener('popstate', (e) => {
                 let state = e.state;
+                fns.switch_nav(state.nav);
                 fns.render_part(state.nav);
             });
         },
-        set_theme: (theme) => {
-            document.body.style.backgroundColor = theme;
-            if(FloatUtil){
-                let [r, g, b] = [255,255,255]||Util.hex_to_rgb(theme);
-                FloatUtil.set_style({
-                    line: {r:r,g:g,b:b},
-                    dot: {r:r,g:g,b:b,a:1},
-                })
-            }
+        switch_nav: (nav_name) => {
+            [].slice.call(document.querySelectorAll('#nav .nav-item')).forEach((item) => {
+                item.classList.remove('at');
+                if(nav_name === item.getAttribute('data-nav')){
+                    item.classList.add('at');
+                    let theme = item.getAttribute('data-theme');
+                    document.body.style.backgroundColor = theme;
+                    if(FloatUtil){
+                        let [r, g, b] = [255,255,255]||Util.hex_to_rgb(theme);
+                        FloatUtil.set_style({
+                            line: {r:r,g:g,b:b},
+                            dot: {r:r,g:g,b:b,a:1},
+                        })
+                    }
+                }
+            });
         },
         render_part: (part, cb) => {
-            part = part || 'index';
             let container = document.querySelector('#content');
             // waiting animation;
             Util.ajax({
@@ -67,12 +73,28 @@
                     temp_html.innerHTML = data;
                     let scripts = [];
                     [].slice.call(temp_html.querySelectorAll('script')).forEach((script) => {
-                        scripts.push(script.innerText);
+                        if(script.getAttribute('src')){
+                            scripts.push({
+                                type: 'src',
+                                data: script.getAttribute('src')
+                            });
+                        }else {
+                            scripts.push({
+                                type: 'text',
+                                data: script.innerText
+                            });
+                        }
                         script.parentNode.removeChild(script);
                     });
                     container.innerHTML = temp_html.innerHTML;
-                    scripts.forEach((script) => {
-                        eval(script);
+                    scripts.forEach((s) => {
+                        let script = document.createElement('script');
+                        if(s.type === 'src') {
+                            script.setAttribute('src', s.data);
+                        }else {
+                            script.innerText = s.data;
+                        }
+                        container.appendChild(script);
                     });
                     (cb||function(){})(status);
                 }
@@ -100,35 +122,33 @@
         '#B9887D',
     ];
 
-    // PlayerUtil.get_list((list) => {
-    //     PlayerUtil.init_player({
-    //         id: 'player',
-    //         list: list
-    //     });
-    // });
-    //
-    // FloatUtil.init_float(document.querySelector('#nav_canvas').getContext('2d'),{
-    //
-    // });
+    PlayerUtil.get_list((list) => {
+        PlayerUtil.init_player({
+            id: 'player',
+            list: list
+        });
+    });
+
+    FloatUtil.init_float(document.querySelector('#nav_canvas').getContext('2d'),{
+
+    });
 
     setTimeout(()=>{
         fns.init_nav();
     },0);
     let nav = document.querySelector('#nav');
-    nav.style.display ='none'
+    // nav.style.display ='none'
     let nav_canvas = document.querySelector('#nav_canvas');
     nav.addEventListener('click', (e) => {
-        if(e.target === nav_canvas) return;
         FloatUtil.canvas_click({
-            offsetX: e.layerX,
-            offsetY: e.layerY
+            offsetX: e.offsetX + e.target.offsetLeft,
+            offsetY: e.offsetY + e.target.offsetTop
         })
     });
     nav.addEventListener('mousemove', (e) => {
-        if(e.target === nav_canvas) return;
         FloatUtil.canvas_mousemove({
-            offsetX: e.layerX,
-            offsetY: e.layerY
+            offsetX: e.offsetX + e.target.offsetLeft,
+            offsetY: e.offsetY + e.target.offsetTop
         })
     });
     nav.addEventListener('mouseleave', (e) => {
