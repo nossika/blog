@@ -281,7 +281,7 @@ window.PlayerUtil = ((Util) => {
                             <use xlink:href="#svgpath_audio_pre"/>
                         </svg>
                     </div>
-                    <div class="control-btn" data-control="play" title="播放/暂停 (P)">
+                    <div class="control-btn play" data-control="play" title="播放/暂停 (P)">
                         <svg viewbox="0 0 1024 1024">
                             <use xlink:href="#svgpath_audio_play"/>
                         </svg>
@@ -296,12 +296,16 @@ window.PlayerUtil = ((Util) => {
                     <img data-info="cover" src=""/>
                 </div>
                 <div data-part="main">
-                    <span data-info="title"></span>
-                    <span data-info="author"></span>
-                    <div data-info="progress_text"></div>
-                    <div class="info-bar">
-                        <div class="bar" data-bar="buffered_bar"></div>
-                        <div class="bar" data-bar="progress_bar"></div>
+                    <div id="player-info" class="top">
+                        <span data-info="title"></span>
+                        <span data-info="author"></span>
+                    </div>
+                    <div class="bottom">
+                        <div class="info-bar">
+                            <div class="bar" data-bar="buffered_bar"></div>
+                            <div class="bar" data-bar="progress_bar"></div>
+                        </div>
+                        <div id="player-progress" data-info="progress_text"></div>
                     </div>
                 </div>
                 <div data-part="toggle_volume">
