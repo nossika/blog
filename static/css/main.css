@@ -126,20 +126,16 @@ button{
     left:0;
     height:50px;
     width:100%;
-    background: rgba(44,44,44,1);
+    background: linear-gradient(0deg, #000 0%, #272727 50%, #272727 65%, #1a1a1a 100%);
     z-index: 102;
 }
 #player .container{
-    width:1000px;
+    width:880px;
     margin:0 auto;
     height: 50px;
     position: relative;
 }
-#player-progress {
-    position: absolute;
-    bottom: 4px;
-    left: 400px;
-}
+
 #player [data-part]{
     float:left;
     display: flex;
@@ -148,11 +144,36 @@ button{
     padding: 0 10px;
     align-items: center;
 }
-#player [data-part="main"]{
-    width:400px;
-    background: #fff;
+#player [data-part="control"]{
+    width: 130px;
+    justify-content: space-between;
 }
-
+#player [data-part="main"]{
+    width:500px;
+}
+#player [data-info="title"]{
+    color: #dcdcdc;
+    display: inline-block;
+    padding-right: 16px;
+    font-size: 16px;
+    line-height: 20px;
+    max-width: 260px;
+    height: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+#player [data-info="author"]{
+    color: #888;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 20px;
+    max-width: 220px;
+    height: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 #player [data-info="cover"]{
     width:40px;
     height:40px;
@@ -161,38 +182,31 @@ button{
 }
 
 #player .control-btn{
-    height:24px;
-    width:24px;
-    fill:#fff;
-    stroke:#ddd;
-    stroke-width: 25;
+    height:28px;
+    width:28px;
+    padding: 5px;
+    cursor: pointer;
+    fill:#888;
+    stroke:#333;
+    stroke-width: 20;
     transition: all .5s ease;
-    float:left;
-}
-#player .control-btn.play{
-    height:32px;
-    width:32px;
-}
-#player .control-btn:hover{
-    fill:#aaa;
-    stroke:#fff;
 }
 
-#player .audio-btn{
-    height:30px;
-    width:30px;
-    fill:#ddd;
-    stroke:none;
-    transition: all .5s ease;
+#player .control-btn:hover{
+    fill:#fff;
+    stroke:#dcdcdc;
+    stroke-width: 50;
 }
-#player .audio-btn:hover{
-    fill:#aaa;
-}
+
+
 
 #player .info-bar {
-    height:10px;
-    width:300px;
-    background: #fff;
+    height:6px;
+    width:400px;
+    margin-top: 25px;
+    background: #191919;
+    box-shadow: -1px 1px 2px #000 inset;
+    border-radius: 5px;
     position: relative;
 }
 #player .info-bar .bar{
@@ -202,6 +216,14 @@ button{
     width: 100%;
     height:100%;
 }
+#player .buffered-bar{
+    border-radius: 5px;
+    background: green;
+}
+#player .progress-bar{
+    border-radius: 5px;
+    background: red;
+}
 #player [data-bar="volume_bar"]{
     height:100px;
     width:10px;
@@ -210,17 +232,35 @@ button{
 
 #player [data-part="volume"]{
     position:absolute;
-    height:200px;
-    width:100px;
-    right:400px;
-    bottom:0;
+    height:100px;
+    width:10px;
+    left:740px;
+    bottom:50px;
 }
-
-#player .list{
+#player [data-part="control2"]{
+    width: 130px
+}
+#player .audio-btn{
+    height:24px;
+    width:24px;
+    padding: 5px;
+    cursor: pointer;
+    fill:#888;
+    stroke:#333;
+    stroke-width: 10;
+    transition: all .5s ease;
+}
+#player .audio-btn:hover{
+    fill:#fff;
+    stroke:#dcdcdc;
+    stroke-width: 30;
+}
+#player [data-part="list"]{
+    padding: 10px 10px 0 10px;
     position:absolute;
-    right:0;
-    bottom:0;
-    width: 500px;
+    left:150px;
+    bottom:50px;
+    width: 560px;
     height: 200px;
     background: rgba(0,0,0,.8);
     color: #797979;
@@ -265,6 +305,21 @@ button{
 
 #player .list-ul li:hover{
     background: #213;
+}
+#player #player-progress {
+    color: #888;
+    position: absolute;
+    font-size: 14px;
+    bottom: 4px;
+    left: 634px;
+}
+#player.collapse #player-progress{
+    bottom: 10px;
+}
+#player #player-info {
+    position: absolute;
+    bottom: 18px;
+    left: 220px;
 }
 
 /* graffiti */

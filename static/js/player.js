@@ -97,14 +97,14 @@ window.PlayerUtil = ((Util) => {
                 hide_dot: true,
                 disabled: true
             });
-            Bars.buffered.elem.bar.style.cssText = 'background:green';
+            Bars.buffered.elem.bar.className = 'buffered-bar';
             Bars.buffered.update();
 
             Bars.progress = new Util.Bar(_player.querySelector('[data-bar="progress_bar"]'), {
                 hide_dot: true,
                 disabled: true
             });
-            Bars.progress.elem.bar.style.cssText = 'background:blue';
+            Bars.progress.elem.bar.className = 'progress-bar';
             Bars.progress.update();
 
             Bars.volume = new Util.Bar(_player.querySelector('[data-bar="volume_bar"]'), {
@@ -276,17 +276,17 @@ window.PlayerUtil = ((Util) => {
             <div>
             <div class="container">
                 <div data-part="control">
-                    <div class="control-btn" data-control="pre" title="上一首 (ctrl + ←)">
+                    <div class="control-btn pre" data-control="pre" title="上一首 (ctrl + ←)">
                         <svg viewbox="0 0 1024 1024">
                             <use xlink:href="#svgpath_audio_pre"/>
                         </svg>
                     </div>
-                    <div class="control-btn play" data-control="play" title="播放/暂停 (P)">
+                    <div id="player-play" class="control-btn" data-control="play" title="播放/暂停 (P)">
                         <svg viewbox="0 0 1024 1024">
                             <use xlink:href="#svgpath_audio_play"/>
                         </svg>
                     </div>
-                    <div class="control-btn" data-control="next" title="下一首 (ctrl + →)">
+                    <div class="control-btn next" data-control="next" title="下一首 (ctrl + →)">
                         <svg viewbox="0 0 1024 1024">
                             <use xlink:href="#svgpath_audio_next"/>
                         </svg>
@@ -296,11 +296,11 @@ window.PlayerUtil = ((Util) => {
                     <img data-info="cover" src=""/>
                 </div>
                 <div data-part="main">
-                    <div id="player-info" class="top">
+                    <div id="player-info">
                         <span data-info="title"></span>
                         <span data-info="author"></span>
                     </div>
-                    <div class="bottom">
+                    <div>
                         <div class="info-bar">
                             <div class="bar" data-bar="buffered_bar"></div>
                             <div class="bar" data-bar="progress_bar"></div>
@@ -308,27 +308,29 @@ window.PlayerUtil = ((Util) => {
                         <div id="player-progress" data-info="progress_text"></div>
                     </div>
                 </div>
-                <div data-part="toggle_volume">
-                    <div class="audio-btn" data-control="toggle_volume">
-                        <svg viewbox="0 0 1024 1024">
-                            <use xlink:href="#svgpath_audio_volume"/>
-                        </svg>
+                <div data-part="control2">
+                    <div data-action="toggle_volume" title="音量">
+                        <div class="audio-btn" data-control="toggle_volume">
+                            <svg viewbox="0 0 1024 1024">
+                                <use xlink:href="#svgpath_audio_volume"/>
+                            </svg>
+                        </div>
                     </div>
+                    <div data-action="mode">
+                        <div class="audio-btn" data-mode="" title="">
+                            <svg viewbox="0 0 1024 1024">
+                                <use xlink:href="#svgpath_audio_normal"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div data-action="toggle_list" title="播放列表">
+                        <div class="audio-btn" data-control="toggle_list">
+                            <svg viewbox="0 0 1024 1024">
+                                <use xlink:href="#svgpath_audio_list"/>
+                            </svg>
+                        </div>
+                    </div> 
                 </div>
-                <div data-part="mode">
-                    <div class="audio-btn" data-mode="" title="">
-                        <svg viewbox="0 0 1024 1024">
-                            <use xlink:href="#svgpath_audio_normal"/>
-                        </svg>
-                    </div>
-                </div>
-                <div data-part="toggle_list" title="播放列表">
-                    <div class="audio-btn" data-control="toggle_list">
-                        <svg viewbox="0 0 1024 1024">
-                            <use xlink:href="#svgpath_audio_list"/>
-                        </svg>
-                    </div>
-                </div>  
                 <div data-part="volume" class="hide">
                     <div data-bar="volume_bar"></div>
                 </div>
