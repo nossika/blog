@@ -49,7 +49,13 @@ window.Util = (()=>{
             dot.addEventListener('mousedown', dot_mdown);
             bar_container.addEventListener('mousedown', (e) => {
                 if(this._disabled) return;
-                let e_offset = this._ori === 'x' ? e.offsetX : this._bar_len - e.offsetY;
+                let [offset_x, offset_y] = [e.offsetX, this._bar_len - e.offsetY];
+                let target = e.target;
+                if(target !== bar_container){
+                    offset_x += target.offsetLeft;
+                    offset_y -= target.offsetTop;
+                }
+                let e_offset = this._ori === 'x' ? offset_x : offset_y;
                 let value = !this._non_overflow ? e_offset / this._bar_len : (e_offset - this._dot_rad) / (this._bar_len - this._dot_rad * 2);
                 this.set_value(value);
                 dot_mdown(e);

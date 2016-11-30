@@ -26,20 +26,24 @@ window.PlayerUtil = ((Util) => {
             _list.innerHTML = PlayerUtil.list_html({
                 list: _data.list
             });
-            _list.addEventListener('dblclick', (e) => {
-                let elem = e.target;
-                while(elem.tagName!=='UL' && !elem.getAttribute('data-index')) elem = elem.parentNode;
-                let index = elem.getAttribute('data-index');
-                if(!index) return;
-                PlayerUtil.play_index(+index);
-            });
             _audio = _player.querySelector('[data-part="audio"]');
             document.body.appendChild(_player);
-
         },
         player_events: (config) => {
             PlayerUtil.init_bars();
 
+            let collapse_delay;
+            _player.addEventListener('mouseenter', () => {
+                clearTimeout(collapse_delay);
+                _player.classList.remove('collapse');
+            });
+            _player.addEventListener('mouseleave', () => {
+                collapse_delay = setTimeout(()=>{
+                    _player.classList.add('collapse');
+                    _player.querySelector('.volume').classList.add('hide');
+                    _player.querySelector('.list').classList.add('hide');
+                },3000);
+            });
             _player.querySelector('[data-control="next"]').addEventListener('click', (e) => {
                 PlayerUtil.play(_data.mode !== 'random' ? 'next' : 'random');
             });
@@ -69,6 +73,13 @@ window.PlayerUtil = ((Util) => {
                     if(ul_h <= view_h) Bars.list.hide_dot();
                 }
                 Bars.list.update();
+            });
+            _list.addEventListener('click', (e) => {
+                let elem = e.target;
+                while(elem.tagName!=='UL' && !elem.getAttribute('data-index')) elem = elem.parentNode;
+                let index = elem.getAttribute('data-index');
+                if(!index) return;
+                PlayerUtil.play_index(+index);
             });
             _player.querySelector('[data-control="hide_list"]').addEventListener('click', (e) => {
                 let elem = _player.querySelector('[data-part="list"]');
@@ -109,9 +120,9 @@ window.PlayerUtil = ((Util) => {
 
             Bars.volume = new Util.Bar(_player.querySelector('[data-bar="volume_bar"]'), {
                 default: 0.8,
-                hide_bar: true
             });
-            Bars.volume.elem.dot.style.cssText = 'cursor:pointer;background:red;height:14px;width:12px;';
+            Bars.volume.elem.dot.className = 'volume-dot';
+            Bars.volume.elem.bar.className = 'volume-bar';
             Bars.volume.update();
             Bars.volume.event.change = (value) => {
                 _audio.volume = value;
@@ -121,7 +132,7 @@ window.PlayerUtil = ((Util) => {
                 hide_bar: true,
                 non_overflow: true
             });
-            Bars.list.elem.dot.style.cssText = 'background:red;width:100%;';
+            Bars.list.elem.dot.className = 'list-dot';
             Bars.list.update();
 
             let view = _player.querySelector('.list-view'),
@@ -132,7 +143,7 @@ window.PlayerUtil = ((Util) => {
                 Bars.list.value -= move/(ul.offsetHeight - view.offsetHeight);
             });
             Bars.list.event.change = (value, type) => {
-                let top = (1 - value) * (ul.offsetHeight - view.offsetHeight)
+                let top = (1 - value) * (ul.offsetHeight - view.offsetHeight);
                 ul.style.top = -top + 'px';
             };
 
@@ -331,13 +342,12 @@ window.PlayerUtil = ((Util) => {
                         </div>
                     </div> 
                 </div>
-                <div data-part="volume" class="hide">
+                <div data-part="volume" class="volume hide">
                     <div data-bar="volume_bar"></div>
                 </div>
                 <div data-part="list" class="list hide">
                     <div class="list-title">
-                        <span>title</span>
-                        <span>author</span>
+                        <span>播放列表</span>
                         <span data-control="hide_list">X</span>
                     </div>
                     <div class="list-content">
@@ -357,7 +367,7 @@ window.PlayerUtil = ((Util) => {
             let html = '';
             params.list.forEach((info, index) => {
                 html += `
-                <li data-index="${index}"><span class="title">${info.title}</span> - <span class="author">${info.author}</span></li>
+                <li data-index="${index}"><span class="title">${info.title}</span> <span class="author">${info.author}</span></li>
                 `
             });
             return html;

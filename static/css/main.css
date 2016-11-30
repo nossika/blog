@@ -123,12 +123,15 @@ button{
 #player{
     position: fixed;
     bottom: 0;
-    left:0;
+    right:0;
     height:50px;
     width:100%;
+    box-shadow: 0 -1px 3px #333;
     background: linear-gradient(0deg, #000 0%, #272727 50%, #272727 65%, #1a1a1a 100%);
+    transition: all .6s ease;
     z-index: 102;
 }
+
 #player .container{
     width:880px;
     margin:0 auto;
@@ -218,25 +221,13 @@ button{
 }
 #player .buffered-bar{
     border-radius: 5px;
-    background: green;
+    background: #333;
 }
 #player .progress-bar{
     border-radius: 5px;
-    background: red;
-}
-#player [data-bar="volume_bar"]{
-    height:100px;
-    width:10px;
-    background: #eef;
+    background: #aaa;
 }
 
-#player [data-part="volume"]{
-    position:absolute;
-    height:100px;
-    width:10px;
-    left:740px;
-    bottom:50px;
-}
 #player [data-part="control2"]{
     width: 130px
 }
@@ -255,27 +246,81 @@ button{
     stroke:#dcdcdc;
     stroke-width: 30;
 }
-#player [data-part="list"]{
-    padding: 10px 10px 0 10px;
+#player [data-bar="volume_bar"]{
+    height:100px;
+    width:6px;
+    background: #080808;
+    cursor: pointer;
+}
+
+#player [data-part="volume"]{
     position:absolute;
+    height:100px;
+    width:6px;
+    left:740px;
+    bottom:50px;
+    padding: 10px;
+    border-radius: 5px 5px 0 0;
+    background: #181818;
+}
+#player .volume .volume-dot{
+    background: #dcdcdc;
+    height: 12px;
+    width:12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#player .volume .volume-dot:before{
+    content:'';
+    position: absolute;
+    width:6px;
+    height:6px;
+    top: 3px;
+    left: 3px;
+    border-radius: 6px;
+    background: #333;
+}
+#player .volume-bar{
+    background: #333;
+}
+#player [data-part="list"]{
+    position:absolute;
+    overflow: hidden;
     left:150px;
     bottom:50px;
     width: 560px;
     height: 200px;
     background: rgba(0,0,0,.8);
     color: #797979;
+    border-radius: 5px 5px 0 0;
+    padding: 0;
 }
 #player .list-title{
     width: 100%;
-    height: 24px;
-    background: #000;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    color: #dcdcdc;
+    background: #181818;
+    border-radius: 5px 5px 0 0;
+}
+#player .list-title span{
+    display: inline-block;
+    padding-left:10px;
+}
+#player .list-title [data-control="hide_list"]{
+    display: inline-block;
+    cursor: pointer;
+    float: right;
+    padding:0 10px;
 }
 #player .list-content{
     width:100%;
     height: calc(100% - 24px);
 }
 #player .list-view{
-    width: calc(100% - 10px);
+    width: 100%;
     height: 100%;
     overflow: hidden;
     float:left;
@@ -283,45 +328,85 @@ button{
 }
 #player .list-ul{
     position:absolute;
+    width: 100%;
     top:0;
     left:0;
 }
-#player .list-bar{
-    width: 10px;
-    height: 100%;
-    background: #111;
-    float: right;
-}
-
 #player .list-ul li{
     list-style: none;
-    cursor: default;
+    cursor: pointer;
 }
 
 #player .list-ul li.at{
-    color: #b1b1b1;
-    font-weight: bold;
+    color: #dcdcdc;
 }
 
 #player .list-ul li:hover{
-    background: #213;
+    background: #212121;
 }
+#player .list-ul .title{
+    display: inline-block;
+    width: 299px;
+    padding: 2px 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+#player .list-ul .author{
+    display: inline-block;
+    width: 210px;
+    padding: 2px 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+#player .list-bar{
+    width: 6px;
+    height: 100%;
+    position: absolute;
+    top:0;
+    right:0;
+}
+#player .list .list-dot{
+    border-radius: 5px;
+    width: 100%;
+    background: #181818;
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+#player .list:hover .list-dot{
+    opacity: 1;
+}
+
+#player.collapse{
+    width: 50%;
+    height: 0px;
+    padding: 20px 0 0 0;
+}
+
 #player #player-progress {
     color: #888;
     position: absolute;
     font-size: 14px;
     bottom: 4px;
     left: 634px;
+    transition: all .6s ease;
 }
 #player.collapse #player-progress{
-    bottom: 10px;
+    bottom: 50px;
 }
 #player #player-info {
     position: absolute;
     bottom: 18px;
     left: 220px;
+    transition: all .6s ease;
 }
-
+#player.collapse #player-info{
+    bottom: 50px;
+}
+#player.collapse #player-info [data-info="title"]{
+    font-size: 14px;
+}
 /* graffiti */
 #graffiti-editor {
     width: 100%;
