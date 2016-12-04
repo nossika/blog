@@ -100,6 +100,18 @@
                 }
             });
         },
+        init_popup: ()=> {
+            document.body.addEventListener('click', (e) => {
+                let top = e.target;
+                while(top !== document.body && !top.classList.contains('popup')){
+                    top = top.parentNode;
+                }
+                if(top !== document.body) return;
+                [].slice.call(document.querySelectorAll('.popup')).forEach((list) => {
+                    list.parentNode.removeChild(list);
+                });
+            });
+        }
     };
     const _themes = [
         '#81C7D4',
@@ -132,7 +144,7 @@
     FloatUtil.init_float(document.querySelector('#nav_canvas').getContext('2d'),{
 
     });
-
+    fns.init_popup();
     setTimeout(()=>{
         fns.init_nav();
     },0);

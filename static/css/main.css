@@ -25,11 +25,28 @@ button{
 .show{
     display: block;
 }
-
+.popup{
+    animation: slide-in .3s ease forwards;
+}
+.popup.default{
+    background: #fff;
+    box-shadow: 1px 1px 1px #333;
+}
+@keyframes slide-in {
+    0%{
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 /* btn */
 .btn{
     background-color: #0e90d2;
     color: #fff;
+    cursor: pointer;
 }
 
 .btn-lg{
@@ -126,7 +143,7 @@ button{
     right:0;
     height:50px;
     width:100%;
-    box-shadow: 0 -1px 3px #333;
+    box-shadow: -1px -1px 3px #333;
     background: linear-gradient(0deg, #000 0%, #272727 50%, #272727 65%, #1a1a1a 100%);
     transition: all .6s ease;
     z-index: 102;
@@ -379,9 +396,10 @@ button{
 }
 
 #player.collapse{
-    width: 50%;
-    height: 0px;
+    width: 420px;
+    height: 0;
     padding: 20px 0 0 0;
+    border-radius: 10px 0 0 0;
 }
 
 #player #player-progress {
@@ -393,7 +411,8 @@ button{
     transition: all .6s ease;
 }
 #player.collapse #player-progress{
-    bottom: 50px;
+    left: 315px;
+    bottom: 51px;
 }
 #player #player-info {
     position: absolute;
@@ -402,14 +421,68 @@ button{
     transition: all .6s ease;
 }
 #player.collapse #player-info{
-    bottom: 50px;
+    left: 25px;
+    bottom: 46px;
 }
 #player.collapse #player-info [data-info="title"]{
     font-size: 14px;
+    width: 120px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+#player.collapse #player-info [data-info="author"]{
+    font-size: 14px;
+    width: 120px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 /* graffiti */
 #graffiti-editor {
-    width: 100%;
+    width: 800px;
     height: 500px;
+    margin: 50px;
+    border: 1px solid #111;
+}
+.graffiti-controller{
+    width: 200px;
+    position: absolute;
+    right: 100px;
+    top : 100px;
+}
+.shape-block{
+    width: 30px;
+    height: 30px;
+    fill: red;
+    cursor: pointer;
+}
+.line-block{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+.line-block>div{
+    background: #000;
+}
+/*color picker*/
+.color-picker{
+    padding: 5px;
+}
+
+.color-block{
+    width: 16px;
+    height: 16px;
+    margin: 3px;
+    border: 1px solid #000;
+    border-radius: 2px;
+    float: left;
+    cursor: pointer;
+}
+.color-block.none{
+    line-height: 16px;
+    text-align: center;
 }
 

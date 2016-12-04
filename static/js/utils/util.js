@@ -179,32 +179,36 @@ window.Util = (()=>{
                 console.log(e);
             }
         },
-        view_load:(source, container, call_back) => {
-            var regText = function(d) {
-                var bodyTag = new RegExp("<body[^>]*?>([\\s\\S]*?)<\/body>", "gm");
-                d.match(bodyTag);
-                if (container) {
-                    container.innerHTML = RegExp.$1;
-                    var scriptTag = new RegExp("<script[^>]*?>([\\s\\S]*?)<\/script>", "gm");
-                    try {
-                        (d.match(scriptTag)||[]).forEach(function(i) {
-                            i.match(scriptTag);
-                            eval(RegExp.$1);
-                        });
-                    } catch (e) {
-                        console.error('【加载html脚本错误:' + source + '】' + e.stack);
+        btn_popup: (e, config) => {
+            let [w, h, mode, offset] = [config.w || 100, config.h || 100, config.mode || 0, config.offset || 0];
+            let popup = document.createElement('div');
+            popup.className = 'popup default';
+            let [left, top] = [e.clientX - e.offsetX, e.clientY - e.offsetY],
+                [btn_w, btn_h] = [e.target.offsetWidth, e.target.offsetHeight];
+            switch (mode) {
+                case 0:
+                    if(top + btn_h + offset + h > document.body.clientHeight){
+                        top -= offset + h;
+                    }else{
+                        top += btn_h + offset;
                     }
-                } else {
-                    console.log("加载容器不存在")
-                }
-            };
-            Util.ajax({
-                url:source,
-                callback:function(data){
-                    regText(data);
-                    (call_back || function() {})();
-                }
-            })
+                    if(left + w > document.body.clientWidth){
+                        left -= w - btn_w;
+                    }
+                    break;
+                case 1:
+                    if(left + btn_w + offset + w > document.body.clientWidth){
+                        left -= offset + w;
+                    }else{
+                        left += btn_w + offset;
+                    }
+                    if(top + h > document.body.clientHeight){
+                        top -= h - btn_h;
+                    }
+                    break;
+            }
+            popup.style.cssText = `position: fixed; top: ${top}px; left: ${left}px; width: ${w}px; height: ${h}px`;
+            return popup;
         },
         sync: (generator) => {
             let g = generator();
