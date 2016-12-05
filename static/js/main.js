@@ -44,6 +44,7 @@
             });
         },
         switch_nav: (nav_name) => {
+            if(window.game_socket) window.game_socket.close();
             [].slice.call(document.querySelectorAll('#nav .nav-item')).forEach((item) => {
                 item.classList.remove('at');
                 if(nav_name === item.getAttribute('data-nav')){
@@ -103,10 +104,10 @@
         init_popup: ()=> {
             document.body.addEventListener('click', (e) => {
                 let top = e.target;
-                while(top !== document.body && !top.classList.contains('popup')){
+                while(top && top !== document && !top.classList.contains('popup')){
                     top = top.parentNode;
                 }
-                if(top !== document.body) return;
+                if(top !== document) return;
                 [].slice.call(document.querySelectorAll('.popup')).forEach((list) => {
                     list.parentNode.removeChild(list);
                 });
