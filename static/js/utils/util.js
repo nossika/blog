@@ -179,6 +179,14 @@ window.Util = (()=>{
                 console.log(e);
             }
         },
+        shuffle_arr: (arr) => {
+            arr = arr.slice();
+            let new_arr = [];
+            while (arr.length) {
+                new_arr.push(arr.splice(Math.floor(Math.random() * arr.length), 1)[0]);
+            }
+            return new_arr;
+        },
         btn_popup: (e, config) => {
             let [w, h, mode, offset] = [config.w || 100, config.h || 100, config.mode || 0, config.offset || 0];
             let popup = document.createElement('div');
