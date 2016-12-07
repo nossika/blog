@@ -1,5 +1,4 @@
 (()=>{
-
     let undercover = {
 
     };
@@ -18,27 +17,27 @@
             },
             '5': {
                 role: ['ML', 'PX', 'ZC', 'MG', 'CK'],
-                mission: [2, 3, 2, 3, 3]
+                vote: [2, 3, 2, 3, 3]
             },
             '6': {
                 role: ['ML', 'PX', 'ZC', 'MG', 'CK', 'ZC'],
-                mission: [2, 3, 4, 3, 4]
+                vote: [2, 3, 4, 3, 4]
             },
             '7': {
                 role: ['ML', 'PX', 'ZC', 'MG', 'CK', 'ZC', 'AB'],
-                mission: [2, 3, 3, 4, 4]
+                vote: [2, 3, 3, 4, 4]
             },
             '8': {
                 role: ['ML', 'PX', 'ZC', 'MG', 'CK', 'ZC', 'ZC', 'ZY'],
-                mission: [3, 4, 4, 5, 5]
+                vote: [3, 4, 4, 5, 5]
             },
             '9': {
                 role: ['ML', 'PX', 'ZC', 'MG', 'CK', 'ZC', 'ZC', 'ZC', 'MD'],
-                mission: [3, 4, 4, 5, 5]
+                vote: [3, 4, 4, 5, 5]
             },
             '10': {
                 role: ['ML', 'PX', 'ZC', 'MG', 'CK', 'ZC', 'ZC', 'ZC', 'MD', 'AB'],
-                mission: [3, 4, 4, 5, 5]
+                vote: [3, 4, 4, 5, 5]
             },
         };
         let html = {
@@ -49,35 +48,41 @@
                         <button data-action="reset" class="btn">重新开始</button>
                     </div>
                     <div class="rule hide">
-                        <h2>角 色 能 力</h2>
-                        <h3>好人（蓝方）角色及能力：</h3>
-                        <p>梅林---看到所有坏人（不含莫德雷德）</p>
-                        <p>派西维尔---看到两个梅林（梅林和莫甘娜）</p>
-                        <p>亚瑟的忠臣---无特殊能力好人</p>
-                
-                        <h3>坏人（红方）角色及能力：</h3>
-                        <p>莫德雷德---梅林看不到他</p>
-                        <p>莫甘娜---假扮梅林，迷惑派西维尔</p>
-                        <p>奥伯伦---看不到其他坏人，其他坏人也看不到他</p>
-                        <p>刺客---在三次任务成功后，可以刺杀梅林</p>
-                        <p>莫德雷德的爪牙---无特殊能力坏人</p>
-                
-                        <h2>游 戏 流 程</h2>
-                
-                        <p>1、随机选择一个玩家担任队长</p>
-                
-                        <p>2、队长根据本轮任务需要的人数，选定任务人选。</p>
-                        <p>3、从队长的右手边开始逆时针发言，队长可以选择第一个发言，或者最后一个发言，发言仅一轮。</p>
-                        <p>4、所有人发言完毕后进入投票环节，所有玩家同时亮出答案（同意或反对本次任务人选），若同意人数超过玩家总数的一半，则任务执行；等于或者小于一半时任务延迟。</p>
-                        <h3>任务执行：</h3>
-                        <p>任务队员从任务成功和失败中选择一个秘密给出，只要出现一张（有*号的轮需要两张）失败票任务即失败，反之任务成功。队长换左手边的人担任，进入下一轮任务，继续流程2-4。</p>
-                        <h3>任务延迟：</h3>
-                        <p>任务不视为执行，队长换左手边的人担任，依然是本轮任务，继续流程2-4。但同一轮任务最多只能延迟4次，出现第5次延迟则本轮任务直接失败，进入下一轮任务，继续流程2-4。</p>
-                
-                        <h2>胜 负 判 定</h2>
-                        <p>游戏过程中，出现三次任务失败时坏人直接胜利。</p>
-                        <p>出现三次任务成功时所有玩家禁言，刺客独自选择一个在场玩家刺杀，如被刺杀的是梅林，则坏人胜利，否则好人胜利。</p>
-                
+                        <div>
+                            <h2>角色能力</h2>
+                            <h3>好人（蓝方）角色及能力：</h3>
+                            <p>梅林---看到所有坏人（不含莫德雷德）</p>
+                            <p>派西维尔---看到两个梅林（梅林和莫甘娜）</p>
+                            <p>亚瑟的忠臣---无特殊能力好人</p>
+                            <h3>坏人（红方）角色及能力：</h3>
+                            <p>莫德雷德---梅林看不到他</p>
+                            <p>莫甘娜---假扮梅林，迷惑派西维尔</p>
+                            <p>奥伯伦---看不到其他坏人，其他坏人也看不到他</p>
+                            <p>刺客---在三次任务成功后，可以刺杀梅林</p>
+                            <p>莫德雷德的爪牙---无特殊能力坏人</p>           
+                        </div>
+                        <div>
+                            <h2>游戏配置</h2>
+                            <p></p>
+                        </div>
+                        
+                        <div>
+                            <h2>游戏流程</h2>
+                            <p>1、随机选择一个玩家担任队长</p>
+                            <p>2、队长根据本轮任务需要的人数，选定任务人选。</p>
+                            <p>3、从队长的右手边开始逆时针发言，队长可以选择第一个发言，或者最后一个发言，发言仅一轮。</p>
+                            <p>4、所有人发言完毕后进入投票环节，所有玩家同时亮出答案（同意或反对本次任务人选），若同意人数超过玩家总数的一半，则任务执行；等于或者小于一半时任务延迟。</p>
+                            <h3>任务执行：</h3>
+                            <p>任务队员从任务成功和失败中选择一个秘密给出，只要出现一张（有*号的轮需要两张）失败票任务即失败，反之任务成功。队长换左手边的人担任，进入下一轮任务，继续流程2-4。</p>
+                            <h3>任务延迟：</h3>
+                            <p>任务不视为执行，队长换左手边的人担任，依然是本轮任务，继续流程2-4。但同一轮任务最多只能延迟4次，出现第5次延迟则本轮任务直接失败，进入下一轮任务，继续流程2-4。</p>
+                        </div>
+                        <div>
+                            <h2>胜负判定</h2>
+                            <p>游戏过程中，出现三次任务失败时坏人直接胜利。</p>
+                            <p>出现三次任务成功时所有玩家禁言，刺客独自选择一个在场玩家刺杀，如被刺杀的是梅林，则坏人胜利，否则好人胜利。</p>
+                        </div>
+                    
                     </div>
 
                 `,
@@ -89,7 +94,7 @@
                         <label>游戏人数：<span class="player"></span>人</label><input class="input" type="range" min="5" max="10" value="${player}"/>
                         <button data-action="next" class="btn">分配角色</button>
                         <p>角色： <span class="role"></span></p>
-                        <p>任务配置： <span class="mission"></span></p>
+                        <p>任务配置： <span class="vote"></span></p>
                     </div>
                 `,
             begin_role: {
@@ -102,7 +107,7 @@
             },
             assign: `
                     <div class="game-assign">
-                        <h1>分配身份</h1>
+                        <h1 class="title">分配身份</h1>
                         <p>请点击你的号码来查看对应身份</p>
                         <ul class="list"></ul>
                         <p>所有人都确认身份完毕后，点击“开始任务”进行下一步。</p>
@@ -116,61 +121,6 @@
             },
             assign_li_font: (index) => {
                 let role = _data.role[index];
-                return `
-                    <img src="${role}.jpg"/>
-                    <p class="name ${_info.map[role].camp}-camp">${_info.map[role].name}</p>
-                    <p class="info"></p>
-                `
-            }
-
-        };
-        let fn = {
-            init: (container, config = {}) => {
-                _ctn = container;
-                _data = {
-                    mission: null,
-                    role: null,
-                    round: []
-                };
-                _ctn.innerHTML = html.init;
-                _board = _ctn.querySelector('.avalon-board');
-                let rule = _ctn.querySelector('.rule');
-                _ctn.querySelector('[data-action="rule"]').addEventListener('click', () => {
-                    rule.classList[rule.classList.contains('hide') ? 'remove' : 'add']('hide');
-                });
-                _ctn.querySelector('[data-action="reset"]').addEventListener('click', () => {
-                    fn.init(_ctn,{player: _data.role.length});
-                });
-                fn.to_begin(config.player);
-            },
-            to_begin: (player = 5) => {
-                _board.innerHTML = html.begin;
-                _board.querySelector('.input').value = player;
-                _board.querySelector('.input').addEventListener('change', (e) => {
-                    set_player(e.target.value);
-                });
-                let set_player = (player) => {
-                    _data.mission = _info[player].mission.slice();
-                    _data.role = Util.shuffle_arr(_info[player].role);
-                    _board.querySelector('.role').innerHTML = html.begin_role[player];
-                    _board.querySelector('.player').innerText = player;
-                    let arr = [];
-                    _data.mission.forEach((num, index) => {
-                        arr.push(' ' + num + ((player >= 7 && index === 3)?'*':' '));
-                    });
-                    _board.querySelector('.mission').innerHTML = arr.join('-');
-                };
-                set_player(player);
-                _board.querySelector('[data-action="next"]').addEventListener('click', () => {
-                    fn.to_assign();
-                });
-            },
-            to_assign: () => {
-                _board.innerHTML = html.assign;
-                let list = _board.querySelector('.list');
-                _data.role.forEach((role, index) => {
-                    list.innerHTML += `<li data-index="${index}">${html.assign_li_back(index)}</li>`;
-                });
                 let role_info = (role) => {
                     let info = '';
                     let check_index = (check_list) => {
@@ -210,6 +160,89 @@
                     }
                     return info;
                 };
+                return `
+                    <img src="${role}.jpg"/>
+                    <p class="name ${_info.map[role].camp}-camp">${_info.map[role].name}</p>
+                    <p class="info">${role_info(role)}</p>
+                `
+            },
+            mission: (round) => {
+                let list = () => {
+                    let html = ``;
+                    for(let i = 0; i < 5; i++){
+                        let div = ``;
+                        if(!_data.result[i]){
+                            div = `<div class="result pending">第${i + 1}轮</div>`;
+                        }else{
+                            div = `<div class="result ${_data.result[i].success ? 'blue' : 'red'}">${_data.result[i].against}失败票</div>`
+                        }
+                        html += div;
+                    }
+                    return html;
+                };
+                return `
+                    <div class="game-mission">
+                        <h1 class="title">进行任务</h1>
+                        <p>当前是第${round + 1}${_data.role.length >=7 && round === 3 ? '*' : ''}轮，需要${_data.vote[round]}人参与</p>
+                        <buttion data-action="success" class="btn">O</buttion>
+                        <buttion data-action="fail" class="btn">X</buttion>
+                        <p><span class="voted_count">0</span>/${_data.vote[round]}人已投票</p>
+                        <button data-action="next" class="btn disabled">显示结果</button>
+                        <div class="result-list">
+                            ${list()}
+                        </div>
+                    </div>
+                `
+            }
+        };
+        let fn = {
+            init: (container, config = {}) => {
+                _ctn = container;
+                _data = {
+                    vote: null,
+                    role: null,
+                    result: []
+                };
+                _ctn.innerHTML = html.init;
+                _board = _ctn.querySelector('.avalon-board');
+                let rule = _ctn.querySelector('.rule');
+                _ctn.querySelector('[data-action="rule"]').addEventListener('click', () => {
+                    rule.classList[rule.classList.contains('hide') ? 'remove' : 'add']('hide');
+                });
+                _ctn.querySelector('[data-action="reset"]').addEventListener('click', () => {
+                    fn.init(_ctn,{player: _data.role.length});
+                });
+                fn.to_begin(config.player);
+            },
+            to_begin: (player = 5) => {
+                _board.innerHTML = html.begin;
+                _board.querySelector('.input').value = player;
+                _board.querySelector('.input').addEventListener('change', (e) => {
+                    set_player(e.target.value);
+                });
+                let set_player = (player) => {
+                    _data.vote = _info[player].vote.slice();
+                    _data.role = Util.shuffle_arr(_info[player].role);
+                    _board.querySelector('.role').innerHTML = html.begin_role[player];
+                    _board.querySelector('.player').innerText = player;
+                    let arr = [];
+                    _data.vote.forEach((num, index) => {
+                        arr.push(' ' + num + ((player >= 7 && index === 3)?'*':' '));
+                    });
+                    _board.querySelector('.vote').innerHTML = arr.join('-');
+                };
+                set_player(player);
+                _board.querySelector('[data-action="next"]').addEventListener('click', () => {
+                    fn.to_assign();
+                });
+            },
+            to_assign: () => {
+                _board.innerHTML = html.assign;
+                let list = _board.querySelector('.list');
+                _data.role.forEach((role, index) => {
+                    list.innerHTML += `<li data-index="${index}">${html.assign_li_back(index)}</li>`;
+                });
+
                 list.addEventListener('click', (e) => {
                     let li = e.target;
                     while (li !== list && !li.getAttribute('data-index')){
@@ -222,15 +255,54 @@
                         li.innerHTML = html.assign_li_back(index);
                     }else {
                         li.innerHTML = html.assign_li_font(index);
-                        li.querySelector('.info').innerHTML = role_info(_data.role[index]);
                     }
                 });
                 _board.querySelector('[data-action="next"]').addEventListener('click', () => {
-                    fn.to_mission();
+                    fn.to_mission(0);
                 });
             },
-            to_mission: () => {
-                console.log(2)
+            to_mission: (round) => {
+                _board.innerHTML = html.mission(round);
+                let result = {
+                    against: 0,
+                    success: undefined
+                };
+                let voted = 0;
+                ['success', 'fail'].forEach((action) => {
+                    console.log(`[data-action="${action}"]`)
+                    _board.querySelector(`[data-action="${action}"]`).addEventListener('click', () => {
+                        if(voted >= _data.vote[round]) return;
+                        voted++;
+                        if(action === 'fail' ) result.against++;
+                        _board.querySelector('.voted_count').innerText = voted + '';
+                        if(voted >= _data.vote[round]){
+                            result.success = result.against <= (_data.role.length >= 7 && round === 3? 1 : 0);
+                            _data.result.push(result);
+                            _board.querySelector('[data-action="next"]').classList.remove('disabled');
+                        }
+                    });
+                });
+                _board.querySelector('[data-action="next"]').addEventListener('click', (e) => {
+                    if(e.target.classList.contains('disabled')) return;
+                    let [blue, red] = [0, 0];
+                    _data.result.forEach((result) => {
+                        if(result.success) {
+                            blue ++;
+                        }else {
+                            red ++;
+                        }
+                    });
+                    if(blue >= 3) {
+                        fn.to_result(true);
+                    }else if(red >= 3){
+                        fn.to_result(false);
+                    }else{
+                        fn.to_mission(round + 1);
+                    }
+                });
+            },
+            to_result: (success) => {
+                _board.innerHTML = success;
             }
 
         };
