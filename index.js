@@ -17,6 +17,10 @@ app.use(function* (){
     this.body = util.render('main.ejs', {nav: '404'});
 });
 
+process.on('uncaughtException', function(err) {
+    console.log('-x- Caught exception: ' , err.stack);
+});
+
 app.listen(7869,()=>{
     console.log(7869)
 });
