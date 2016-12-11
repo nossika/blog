@@ -21,6 +21,7 @@
     "koa": "^1.2.4",
     "koa-router": "^5.4.0",
     "koa-static": "^2.0.0",
+    "mongodb": "^2.2.15",
     "socket.io": "^1.7.1"
   },
   "devDependencies": {

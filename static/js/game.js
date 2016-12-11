@@ -88,13 +88,13 @@
                 `,
 
             begin: `
-                    <div class="game-begin">
+                    <div class="game-begin fade-in">
                         <h1>阿瓦隆</h1>
-                        <p>这是一个5-10人的桌面游戏，分为红、蓝两方阵营，进行共计5轮的任务。红方需要辨认敌友、促进任务的成功以及帮助隐藏梅林。蓝方需要伪装成好人，从中作梗使任务失败，或者找出红方中的梅林刺杀。详细规则可随时在游戏过程中点击“查看规则”来打开/关闭。</p>
+                        <div>这是一个5-10人的桌面游戏，分为红、蓝两方阵营，进行共计5轮的任务。红方需要辨认敌友、促进任务的成功以及帮助隐藏梅林。蓝方需要伪装成好人，从中作梗使任务失败，或者找出红方中的梅林刺杀。详细规则可随时在游戏过程中点击“查看规则”来打开/关闭。</div>
                         <label>游戏人数：<span class="player"></span>人</label><input class="input" type="range" min="5" max="10" value="${player}"/>
                         <button data-action="next" class="btn">分配角色</button>
-                        <p>角色： <span class="role"></span></p>
-                        <p>任务配置： <span class="vote"></span></p>
+                        <div>角色： <span class="role"></span></div>
+                        <div>任务配置： <span class="vote"></span></div>
                     </div>
                 `,
             begin_role: {
@@ -106,17 +106,19 @@
                 '10':'<span class="blue-camp">梅林、派希维尔、忠臣x4</span> VS <span class="red-camp">莫甘娜 莫德雷德 奥伯伦 刺客</span>'
             },
             assign: `
-                    <div class="game-assign">
+                    <div class="game-assign fade-in">
                         <h1 class="title">分配身份</h1>
-                        <p>请点击你的号码来查看对应身份</p>
+                        <div>请各玩家依次传递查看自己身份牌信息，传递前请及时把自己身份牌翻回背面，以免泄露信息</div>
                         <ul class="list"></ul>
-                        <p>所有人都确认身份完毕后，点击“开始任务”进行下一步。</p>
+                        <div>所有人都确认完毕自己身份后，点击“开始任务”进行下一步。</p>
                         <button data-action="next" class="btn">开始任务</button>
                     </div>
                 `,
             assign_li_back: (index) => {
                 return `
-                    <p>${index + 1}</p>
+                    <div class="back side">
+                        <div class="num">${index + 1}</div>
+                    </div>
                 `
             },
             assign_li_font: (index) => {
@@ -134,36 +136,39 @@
                     };
                     switch (role) {
                         case 'ML':
-                            info = `你知道<span class="red-camp">${check_index(['MG', 'CK', 'AB', 'ZY'])}</span>号是敌人`;
+                            info = `你知道<span class="red-camp">${check_index(['MG', 'CK', 'AB', 'ZY'])}</span>号是敌人。`;
                             break;
                         case 'PX':
-                            info = `你知道<span class="blue-camp">${check_index(['ML', 'MG'])}</span>号是梅林`;
+                            info = `你知道<span class="blue-camp">${check_index(['ML', 'MG'])}</span>号是梅林。`;
                             break;
                         case 'ZC':
-                            info = `你对其他人的身份一无所知`;
+                            info = `你对其他人的身份一无所知。`;
                             break;
                         case 'MG':
-                            info = `你知道<span class="red-camp">${check_index(['CK', 'ZY', 'MD'])}</span>号是你的同伙`;
+                            info = `你知道<span class="red-camp">${check_index(['CK', 'ZY', 'MD'])}</span>号是你的同伙。`;
                             break;
                         case 'CK':
-                            info = `你知道<span class="red-camp">${check_index(['MG', 'ZY', 'MD'])}</span>号是你的同伙`;
+                            info = `你知道<span class="red-camp">${check_index(['MG', 'ZY', 'MD'])}</span>号是你的同伙。`;
                             break;
                         case 'AB':
-                            info = `你对其他人的身份一无所知`;
+                            info = `你对其他人的身份一无所知。`;
                             break;
                         case 'ZY':
-                            info = `你知道<span class="red-camp">${check_index(['MG', 'CK', 'MD'])}</span>号是你的同伙`;
+                            info = `你知道<span class="red-camp">${check_index(['MG', 'CK', 'MD'])}</span>号是你的同伙。`;
                             break;
                         case 'MD':
-                            info = `你知道<span class="red-camp">${check_index(['MG', 'CK', 'ZY'])}</span>号是你的同伙`;
+                            info = `你知道<span class="red-camp">${check_index(['MG', 'CK', 'ZY'])}</span>号是你的同伙。`;
                             break;
                     }
                     return info;
                 };
                 return `
-                    <img src="${role}.jpg"/>
-                    <p class="name ${_info.map[role].camp}-camp">${_info.map[role].name}</p>
-                    <p class="info">${role_info(role)}</p>
+                    <div class="font side">
+                        <img src="/img/avalon/${role}.jpg"/>
+                        <div class="name ${_info.map[role].camp}-camp">${_info.map[role].name}</div>
+                        <div class="info">${role_info(role)}</div>
+                    </div>
+
                 `
             },
             mission: (round) => {
@@ -181,16 +186,30 @@
                     return html;
                 };
                 return `
-                    <div class="game-mission">
+                    <div class="game-mission fade-in">
                         <h1 class="title">进行任务</h1>
-                        <p>当前是第${round + 1}${_data.role.length >=7 && round === 3 ? '*' : ''}轮，需要${_data.vote[round]}人参与</p>
-                        <buttion data-action="success" class="btn">O</buttion>
-                        <buttion data-action="fail" class="btn">X</buttion>
-                        <p><span class="voted_count">0</span>/${_data.vote[round]}人已投票</p>
+                        <div>当前是第${round + 1}${_data.role.length >=7 && round === 3 ? '*' : ''}轮，需要${_data.vote[round]}人参与</div>
+                        <div data-action="success" class="btn vote slide-in">
+                            <svg viewbox="0 0 1024 1024">
+                                <use xlink:href="#svgpath-game-O"/>
+                            </svg>
+                        </div>
+                        <div data-action="fail" class="btn vote slide-in">
+                            <svg viewbox="0 0 1024 1024">
+                                <use xlink:href="#svgpath-game-X"/>
+                            </svg>
+                        </div>
+                        <div class=""><span class="voted_count">0</span>/${_data.vote[round]}人已投票</div>
                         <button data-action="next" class="btn disabled">显示结果</button>
                         <div class="result-list">
                             ${list()}
                         </div>
+                        <svg width="0" height="0">
+                            <defs>
+                                <path id="svgpath-game-O" d="M512 865.523785 512 865.523785C707.245787 865.523785 865.523785 707.245787 865.523785 512 865.523785 316.754213 707.245787 158.476215 512 158.476215 316.754191 158.476215 158.476193 316.754213 158.476193 512 158.476193 707.245787 316.754191 865.523785 512 865.523785L512 865.523785ZM512 1024 512 1024C229.230212 1024 0 794.769774 0 512 0 229.230226 229.230212 0 512 0 794.769774 0 1024 229.230226 1024 512 1024 794.769774 794.769774 1024 512 1024L512 1024Z"></path>
+                                <path id="svgpath-game-X" d="M622.656 539.52l316.736-316.8c37.504-37.504 37.504-98.24 0-135.744-37.44-37.504-98.24-37.504-135.744 0l-316.8 316.8-316.736-316.8c-37.504-37.504-98.304-37.504-135.808 0-37.44 37.504-37.44 98.24 0 135.744l316.8 316.8-316.8 316.736c-37.44 37.504-37.44 98.304 0 135.808 37.504 37.504 98.304 37.504 135.808 0l316.736-316.8 316.8 316.8c37.504 37.504 98.304 37.504 135.744 0 37.504-37.504 37.504-98.304 0-135.808l-316.736-316.736z"></path>
+                            </defs>
+                        </svg>
                     </div>
                 `
             }
@@ -240,7 +259,10 @@
                 _board.innerHTML = html.assign;
                 let list = _board.querySelector('.list');
                 _data.role.forEach((role, index) => {
-                    list.innerHTML += `<li data-index="${index}">${html.assign_li_back(index)}</li>`;
+                    list.innerHTML += `<li data-index="${index}">
+                        ${html.assign_li_back(index)}
+                        ${html.assign_li_font(index)}
+                    </li>`;
                 });
 
                 list.addEventListener('click', (e) => {
@@ -251,11 +273,7 @@
                     let index = li.getAttribute('data-index');
                     if(index === null) return;
                     index = +index;
-                    if(li.querySelector('.info')){
-                        li.innerHTML = html.assign_li_back(index);
-                    }else {
-                        li.innerHTML = html.assign_li_font(index);
-                    }
+                    li.classList[li.classList.contains('checking') ? 'remove' : 'add']('checking');
                 });
                 _board.querySelector('[data-action="next"]').addEventListener('click', () => {
                     fn.to_mission(0);
@@ -270,8 +288,13 @@
                 let voted = 0;
                 ['success', 'fail'].forEach((action) => {
                     console.log(`[data-action="${action}"]`)
-                    _board.querySelector(`[data-action="${action}"]`).addEventListener('click', () => {
+                    let btn = _board.querySelector(`[data-action="${action}"]`);
+                    btn.addEventListener('click', () => {
                         if(voted >= _data.vote[round]) return;
+                        btn.classList.add('voting');
+                        setTimeout(() => {
+                            btn.classList.remove('voting');
+                        }, 800);
                         voted++;
                         if(action === 'fail' ) result.against++;
                         _board.querySelector('.voted_count').innerText = voted + '';
@@ -304,7 +327,6 @@
             to_result: (success) => {
                 _board.innerHTML = success;
             }
-
         };
         return fn;
     };
@@ -314,14 +336,22 @@
         undercover: undercover
     };
     let board = document.querySelector('#game-board');
-    board.querySelector('.game-list').addEventListener('click', (e) => {
+    let list = document.querySelector('#game-list');
+    list.addEventListener('click', (e) => {
         let target = e.target;
-        while(!target.classList.contains('game-list') && !target.getAttribute('data-game')){
+        while(target.id !== 'game-list' && !target.getAttribute('data-game')){
             target = target.parentNode;
         }
         let game = target.getAttribute('data-game');
         if(!game) return;
         let util = games[game]();
         util.init(board);
+        target.classList.add('enlarge-out');
+        setTimeout(() => {
+            target.classList.remove('enlarge-out');
+            list.classList.add('hide');
+            board.classList.remove('hide');
+        }, 250);
+
     });
 })();

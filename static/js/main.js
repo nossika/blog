@@ -62,7 +62,7 @@
             });
         },
         render_part: (part, cb) => {
-            let container = document.querySelector('#content');
+            let container = document.querySelector('#main-container');
             // waiting animation;
             Util.ajax({
                 url: `${server}/tool/view_part`,

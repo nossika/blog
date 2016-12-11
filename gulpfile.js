@@ -16,11 +16,17 @@ gulp.task('package_js', () => {
 });
 gulp.task('compile_scss', () => {
     gulp.src('static/scss/*.scss')
-        .pipe(sass())
+        .pipe(sass({
+            // outputStyle: 'compressed'
+        }))
         .pipe(gulp.dest('static/dist/css'));
 });
 gulp.watch('static/scss/*.scss', ['compile_scss']);
 
 gulp.task('default', ['package_js', 'compile_scss'], () => {
     console.log('done');
+});
+
+process.on('uncaughtException', function(err) {
+    console.log('uncaughtException: ' , err.stack);
 });
