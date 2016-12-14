@@ -1,7 +1,7 @@
 (()=>{
     const server = 'http://localhost:7869';
 
-    const fns = {
+    const FN = {
         init_nav: () => {
             let nav = document.querySelector('#nav'),
                 at = nav.getAttribute('data-at');
@@ -11,7 +11,7 @@
                     name = item.getAttribute('data-nav');
                 let theme = item.getAttribute('data-theme');
                 if(name === at) {
-                    fns.switch_nav(name);
+                    FN.switch_nav(name);
                     history.replaceState({
                         nav: name
                     }, name, href)
@@ -29,8 +29,8 @@
                     if(target.classList.contains('at')) return;
                     let href = item.getAttribute('href'),
                         name = item.getAttribute('data-nav');
-                    fns.switch_nav(name);
-                    fns.render_part(name, () => {
+                    FN.switch_nav(name);
+                    FN.render_part(name, () => {
                         history.pushState({
                             nav: name
                         }, name, href)
@@ -39,8 +39,8 @@
             });
             window.addEventListener('popstate', (e) => {
                 let state = e.state;
-                fns.switch_nav(state.nav);
-                fns.render_part(state.nav);
+                FN.switch_nav(state.nav);
+                FN.render_part(state.nav);
             });
         },
         switch_nav: (nav_name) => {
@@ -112,6 +112,9 @@
                     list.parentNode.removeChild(list);
                 });
             });
+        },
+        init_window_event: () => {
+
         }
     };
     const _themes = [
@@ -145,9 +148,9 @@
     FloatUtil.init_float(document.querySelector('#nav_canvas').getContext('2d'),{
 
     });
-    fns.init_popup();
+    FN.init_popup();
     setTimeout(()=>{
-        fns.init_nav();
+        FN.init_nav();
     },0);
     let nav = document.querySelector('#nav');
     // nav.style.display ='none'
@@ -167,22 +170,10 @@
     nav.addEventListener('mouseleave', (e) => {
         FloatUtil.canvas_mouseleave();
     });
-
 })();
 
 
-document.addEventListener('keyup', (e) => {
-    if(e.keyCode === 37){
-        let canvas = document.querySelector('#nav_canvas');
-        let data = canvas.toDataURL();
-        let div = document.createElement('div');
-        div.innerHTML = '<a id="a" href="'+data+'" download>fwefew</a>'
-        document.body.appendChild(div);
-        let a = document.querySelector('#a');
-        a.click();
-        a.parentNode.removeChild(a);
-    }
-});
+
 
 
 

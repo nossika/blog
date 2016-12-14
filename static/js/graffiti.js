@@ -99,13 +99,42 @@
         Util.ajax({
             url: '/graffiti/submit',
             data: {
-                data: GraffitiUtil.get_data(),
-                size: GraffitiUtil.get_size()
+                data: JSON.stringify(GraffitiUtil.get_data())
             },
-            type: 'post',
+            method: 'post',
             callback: (d) => {
                 console.log(d)
             }
         })
     });
+    Util.ajax({
+        url: '/graffiti/list',
+        data: {
+            limit: 50,
+            skip: 0
+        },
+        method: 'get',
+        callback: (d) => {
+            try {
+                d = JSON.parse(d);
+            } catch (e) {
+                d = null;
+            }
+            if(!d) return;
+            d.forEach((canvas_data) => {
+                let main_data = canvas_data.data;
+                if(!main_data) return;
+                let canvas = document.createElement('canvas');
+                canvas.width = 802;
+                canvas.height = 502;
+                document.body.appendChild(canvas);
+                GraffitiUtil.draw_canvas(main_data, canvas.getContext('2d'));
+            });
+
+        }
+    });
+    window.scroll_fn['graffiti'] = () => {
+        if(!document.querySelector('.graffiti-board')) return;
+        console.log(1)
+    }
 })();

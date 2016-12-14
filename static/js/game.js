@@ -177,9 +177,9 @@
                     for(let i = 0; i < 5; i++){
                         let div = ``;
                         if(!_data.result[i]){
-                            div = `<div class="result pending">第${i + 1}轮</div>`;
+                            div = `<div class="round-result pending">${i + 1}</div>`;
                         }else{
-                            div = `<div class="result ${_data.result[i].success ? 'blue' : 'red'}">${_data.result[i].against}失败票</div>`
+                            div = `<div class="round-result ${_data.result[i].success ? 'blue' : 'red'}">${_data.result[i].against}失败票</div>`
                         }
                         html += div;
                     }

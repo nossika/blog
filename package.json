@@ -19,6 +19,7 @@
   "dependencies": {
     "ejs": "^2.5.2",
     "koa": "^1.2.4",
+    "koa-bodyparser": "^2.3.0",
     "koa-router": "^5.4.0",
     "koa-static": "^2.0.0",
     "mongodb": "^2.2.15",

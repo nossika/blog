@@ -47,10 +47,10 @@ window.GraffitiUtil = (() => {
             main_data.pop();
             GraffitiUtil.draw_canvas(main_data, _ctx);
         },
-        draw_canvas: (main_data, ctx, show_path) => {
+        draw_canvas: (main_data, ctx, editing) => {
             ctx.clearRect(0,0,_ctx.canvas.width,_ctx.canvas.height);
             main_data.forEach((paint_data, index) => {
-                Shapes[paint_data.shape].draw(paint_data, ctx, show_path && index === main_data.length - 1);
+                Shapes[paint_data.shape].draw(paint_data, ctx, editing && index === main_data.length - 1);
             })
         },
         download_png: () => {
@@ -67,12 +67,11 @@ window.GraffitiUtil = (() => {
                     if(x_min === undefined) {
                         x_min = x_max = x;
                         y_min = y_max = y;
-                    }else{
-                        x_min = x < x_min ? x : x_min;
-                        y_min = y < y_min ? y : y_min;
-                        x_max = x > x_max ? x : x_max;
-                        y_max = y > y_max ? y : y_max;
                     }
+                    x_min = Math.min(x, x_min);
+                    y_min = Math.min(y, y_min);
+                    x_max = Math.max(x, x_max);
+                    y_max = Math.max(y, y_max);
                 });
             });
             return [x_min, y_min, x_max, y_max];
@@ -108,8 +107,10 @@ window.GraffitiUtil = (() => {
                 data.points.forEach(([x, y]) => {
                     ctx.lineTo(x, y);
                 });
-                ctx.lineWidth = data.width;
-                ctx.strokeStyle = data.stroke;
+                ({
+                    width: ctx.lineWidth,
+                    stroke: ctx.strokeStyle
+                } = data);
                 ctx.stroke();
             },
             pick: points => points
@@ -120,16 +121,18 @@ window.GraffitiUtil = (() => {
                 ctx.beginPath();
                 ctx.moveTo(...a);
                 ctx.lineTo(...b);
-                ctx.lineWidth = data.width;
-                ctx.strokeStyle = data.stroke;
+                ({
+                    width: ctx.lineWidth,
+                    stroke: ctx.strokeStyle
+                } = data);
                 ctx.stroke();
             },
             pick: points => [points[0], points[points.length - 1]]
         },
         circle: {
-            draw: (data, ctx, show_path) => {
+            draw: (data, ctx, editing) => {
                 let [a, b] = Shapes.circle.pick(data.points);
-                if(show_path){
+                if(editing){
                     Shapes.line.draw({
                         points: [a, b],
                         width: 1,
@@ -145,18 +148,20 @@ window.GraffitiUtil = (() => {
                 ctx.arc(x / scale_x, y / scale_y, r, 0, 2 * Math.PI);
                 ctx.closePath();
                 ctx.restore();
-                ctx.lineWidth = data.width;
-                ctx.strokeStyle = data.stroke;
-                ctx.fillStyle = data.fill;
+                ({
+                    width: ctx.lineWidth,
+                    stroke: ctx.strokeStyle,
+                    fill: ctx.fillStyle
+                } = data);
                 ctx.stroke();
                 ctx.fill();
             },
             pick: points => [points[0], points[points.length - 1]]
         },
         rectangle: {
-            draw: (data, ctx, show_path) => {
+            draw: (data, ctx, editing) => {
                 let [a, b] = Shapes.rectangle.pick(data.points);
-                if(show_path){
+                if(editing){
                     Shapes.line.draw({
                         points: [a, b],
                         width: 1,
@@ -166,18 +171,20 @@ window.GraffitiUtil = (() => {
                 ctx.beginPath();
                 ctx.rect(a[0], a[1], b[0] - a[0], b[1] - a[1]);
                 ctx.closePath();
-                ctx.lineWidth = data.width;
-                ctx.strokeStyle = data.stroke;
-                ctx.fillStyle = data.fill;
+                ({
+                    width: ctx.lineWidth,
+                    stroke: ctx.strokeStyle,
+                    fill: ctx.fillStyle
+                } = data);
                 ctx.stroke();
                 ctx.fill();
             },
             pick: points => [points[0], points[points.length - 1]]
         },
         triangle: {
-            draw: (data, ctx, show_path) => {
+            draw: (data, ctx, editing) => {
                 let [a, b, c] = Shapes.triangle.pick(data.points);
-                if(show_path){
+                if(editing){
                     Shapes.line.draw({
                         points: data.points,
                         width: 1,
@@ -189,9 +196,11 @@ window.GraffitiUtil = (() => {
                     ctx.lineTo(x, y);
                 });
                 ctx.closePath();
-                ctx.lineWidth = data.width;
-                ctx.strokeStyle = data.stroke;
-                ctx.fillStyle = data.fill;
+                ({
+                    width: ctx.lineWidth,
+                    stroke: ctx.strokeStyle,
+                    fill: ctx.fillStyle
+                } = data);
                 ctx.stroke();
                 ctx.fill();
             },
@@ -210,7 +219,7 @@ window.GraffitiUtil = (() => {
             }
         },
         eraser: {
-            draw: (data, ctx, show_path) => {
+            draw: (data, ctx, editing) => {
                 ctx.beginPath();
                 data.points.forEach(([x, y]) => {
                     ctx.clearRect(x - 5, y - 5, 10, 10);

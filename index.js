@@ -1,6 +1,7 @@
 "use strict";
 const koa = require('koa');
 const koa_static = require('koa-static');
+const koa_parser = require('koa-bodyparser');
 const koa_router = require('koa-router')();
 const app = koa();
 const util = require('./util/main');
@@ -10,7 +11,7 @@ require('mongodb').MongoClient.connect('mongodb://localhost/nossika', (err, db) 
 });
 
 
-
+app.use(koa_parser());
 app.use(koa_static(__dirname + '/static'));
 app.use(koa_router.routes()).use(koa_router.allowedMethods());
 

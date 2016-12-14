@@ -149,9 +149,10 @@ window.Util = (()=>{
 
             try{
                 let XHR = new XMLHttpRequest();
+
                 let data_arr = [];
                 for(let key in data){
-                    data_arr.push(key+'='+data[key]);
+                    data_arr.push(key + '=' + data[key]);
                 }
                 let data_str = data_arr.join('&');
 
@@ -164,16 +165,17 @@ window.Util = (()=>{
                 }else{
                     throw 'only get/post available';
                 }
-
+                XHR.open(method, url);
+                for(let i in header){
+                    XHR.setRequestHeader(i, header[i]);
+                }
+                if(method === 'POST') XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 XHR.onreadystatechange = function(){
                     if(XHR.readyState === 4){
                         callback(XHR.responseText,XHR.status);
                     }
                 };
-                XHR.open(method,url);
-                for(let i in header){
-                    XHR.setRequestHeader(i, header[i]);
-                }
+
                 XHR.send(body);
             }catch (e){
                 console.log(e);

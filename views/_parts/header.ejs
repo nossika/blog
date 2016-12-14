@@ -10,6 +10,20 @@
     <!--<script src="/js/utils/graffiti.js"></script>-->
     <!--<script src="/js/utils/colorpicker.js"></script>-->
     <link rel="stylesheet" href="/dist/css/main.css" />
+    <script>
+        window.scroll_fn = {};
+        window.addEventListener('scroll', () => {
+            for(let fn in window.scroll_fn){
+                window.scroll_fn[fn]();
+            }
+        });
+        window.resize_fn = {};
+        window.addEventListener('resize', () => {
+            for(let fn in window.resize_fn){
+                window.resize_fn[fn]();
+            }
+        });
+    </script>
 </head>
 <body>
 
