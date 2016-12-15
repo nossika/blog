@@ -3,14 +3,19 @@ window.Waterfall = (() => {
     let Waterfall = {
         init: (container, selector, config = {}) => {
             _ctn = container;
+            if(!config.no_css){
+                container.style.position = 'relative';
+            }
             _selector = selector;
             _space = config.space || _space;
-            let box = container.querySelector(_selector);
-            _box_w = box.offsetWidth + _space[1] * 2;
-            Waterfall.resize();
+            Waterfall.fall();
         },
-        resize: (cache) => {
-            if(!cache) {
+        fall: (cache) => {
+            if(!_ctn) return;
+            let box = _ctn.querySelector(_selector);
+            if(!box) return;
+            _box_w = box.offsetWidth + _space[1] * 2;
+            if(!cache || !_data) {
                 _data = [];
                 _data.count = 0;
                 let _ctn_w = _ctn.offsetWidth;
@@ -36,10 +41,18 @@ window.Waterfall = (() => {
                 });
                 let col_data = _data[col_index];
                 _data.count++;
+                box.style.position = 'absolute';
                 box.style.top = col_data.top + _space[0] + 'px';
                 box.style.left = col_data.left + _space[1] + 'px';
                 col_data.top += box.offsetHeight + _space[1] * 2;
             });
+            let _ctn_h;
+            _data.forEach((_col_data) => {
+                if(_ctn_h === undefined || _col_data.top > _ctn_h){
+                    _ctn_h = _col_data.top;
+                }
+            });
+            _ctn.style.height = _ctn_h + 'px';
         }
     };
     return Waterfall;

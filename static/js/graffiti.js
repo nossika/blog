@@ -107,34 +107,77 @@
             }
         })
     });
-    Util.ajax({
-        url: '/graffiti/list',
-        data: {
-            limit: 50,
-            skip: 0
-        },
-        method: 'get',
-        callback: (d) => {
-            try {
-                d = JSON.parse(d);
-            } catch (e) {
-                d = null;
-            }
-            if(!d) return;
-            d.forEach((canvas_data) => {
-                let main_data = canvas_data.data;
-                if(!main_data) return;
-                let canvas = document.createElement('canvas');
-                canvas.width = 802;
-                canvas.height = 502;
-                document.body.appendChild(canvas);
-                GraffitiUtil.draw_canvas(main_data, canvas.getContext('2d'));
-            });
 
-        }
+    Waterfall.init(document.querySelector('.graffiti-board'), 'canvas', {
+        space: [20, 20]
     });
+    let get_graffiti = (config, cb) => {
+        Util.ajax({
+            url: '/graffiti/list',
+            data: {
+                limit: config.limit,
+                skip: config.skip
+            },
+            method: 'get',
+            callback: (d) => {
+                try {
+                    d = JSON.parse(d);
+                } catch (e) {
+                    d = null;
+                }
+                if(!d) return;
+                let canvas_board = document.querySelector('.graffiti-board');
+                d.forEach((canvas_data) => {
+                    let main_data = canvas_data.data;
+                    if(!main_data) return;
+                    let canvas = document.createElement('canvas'),
+                        ctx = canvas.getContext('2d');
+                    let [x_min, x_max, y_min, y_max] = GraffitiUtil.get_point_range(main_data);
+                    let padding = 30;
+                    x_min -= padding;
+                    x_max += padding;
+                    y_min -= padding;
+                    y_max += padding;
+                    let width = 300;
+                    let scale = width / (x_max - x_min);
+                    scale = Math.min(scale, 1.2);
+                    canvas.width = width;
+                    canvas.height = scale * (y_max - y_min);
+                    ctx.scale(scale, scale);
+                    ctx.translate(-x_min, -y_min);
+                    GraffitiUtil.draw_canvas(main_data, ctx);
+                    canvas_board.appendChild(canvas);
+                });
+                Waterfall.fall(true);
+                (cb || function(){})();
+            }
+        });
+    };
+    get_graffiti(30, 0);
     window.scroll_fn['graffiti'] = () => {
         if(!document.querySelector('.graffiti-board')) return;
-        console.log(1)
-    }
+        if(window.scroll_fn['graffiti'].locked) return;
+        let body = document.body;
+        if(body.scrollTop + document.documentElement.clientHeight > body.scrollHeight - 150) {
+            window.scroll_fn['graffiti'].locked = true;
+            let lock_timer = setTimeout(() => {
+                window.scroll_fn['graffiti'].locked = false;
+            }, 3000);
+            get_graffiti({
+                limit: 30,
+                skip: 0
+            }, () => {
+                window.scroll_fn['graffiti'].locked = false;
+                clearTimeout(lock_timer);
+            });
+        }
+    };
+    Reflect.defineProperty(window.scroll_fn['graffiti'], 'locked', {
+        value: false,
+        writable: true
+    });
+    window.resize_fn['graffiti'] = () => {
+        if(!document.querySelector('.graffiti-board')) return;
+        Waterfall.fall();
+    };
 })();

@@ -74,7 +74,7 @@ window.GraffitiUtil = (() => {
                     y_max = Math.max(y, y_max);
                 });
             });
-            return [x_min, y_min, x_max, y_max];
+            return [x_min, x_max, y_min, y_max];
         },
         get_data: () => {
             return main_data;
