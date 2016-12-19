@@ -44,10 +44,10 @@
             init: `
                     <div class="avalon-board"></div>
                     <div class="avalon-btn">
-                        <button data-action="rule" class="btn">查看规则</button>
-                        <button data-action="reset" class="btn">重新开始</button>
+                        <button data-action="rule" class="btn btn-md btn-green">查看规则</button>
+                        <button data-action="reset" class="btn btn-md btn-green">重新开始</button>
                     </div>
-                    <div class="rule hide">
+                    <div class="avalon-rule hide">
                         <div>
                             <h2>角色能力</h2>
                             <h3>好人（蓝方）角色及能力：</h3>
@@ -63,7 +63,12 @@
                         </div>
                         <div>
                             <h2>游戏配置</h2>
-                            <p></p>
+                            <p>5人：梅林、派希维尔、忠臣 VS 莫甘娜 刺客 / 2 - 3 - 2 - 3 - 3</p>
+                            <p>6人：梅林、派希维尔、忠臣X2 VS 莫甘娜 刺客 / 2 - 3 - 4 - 3 - 4</p>
+                            <p>7人：梅林、派希维尔、忠臣x2 VS 莫甘娜 奥伯伦 刺客 / 2 - 3 - 3 - 4*- 4</p>
+                            <p>8人：梅林、派希维尔、忠臣x3 VS 莫甘娜 爪牙 刺客 / 3 - 4 - 4 - 5*- 5</p>
+                            <p>9人：梅林、派希维尔、忠臣x4 VS 莫甘娜 莫德雷德 刺客 / 3 - 4 - 4 - 5*- 5</p>
+                            <p>10人：梅林、派希维尔、忠臣x4 VS 莫甘娜 莫德雷德 奥伯伦 刺客 / 3 - 4 - 4 - 5*- 5</p>
                         </div>
                         
                         <div>
@@ -89,12 +94,16 @@
 
             begin: `
                     <div class="game-begin fade-in">
-                        <h1>阿瓦隆</h1>
-                        <div>这是一个5-10人的桌面游戏，分为红、蓝两方阵营，进行共计5轮的任务。红方需要辨认敌友、促进任务的成功以及帮助隐藏梅林。蓝方需要伪装成好人，从中作梗使任务失败，或者找出红方中的梅林刺杀。详细规则可随时在游戏过程中点击“查看规则”来打开/关闭。</div>
-                        <label>游戏人数：<span class="player"></span>人</label><input class="input" type="range" min="5" max="10" value="${player}"/>
-                        <button data-action="next" class="btn">分配角色</button>
+                        <div class="title">阿瓦隆</div>
+                        <div class="intro">这是一个5-10人的桌面游戏，分为红、蓝两方阵营，进行共计5轮的任务。红方需要辨认敌友、促进任务的成功以及帮助隐藏梅林。蓝方需要伪装成好人，从中作梗使任务失败，或者找出红方中的梅林刺杀。详细规则可随时在游戏过程中点击“查看规则”来打开/关闭。</div>
+                        <div>
+                            <label>游戏人数：<span class="player"></span>人</label>
+                            <input class="input" type="range" min="5" max="10" value="${player}"/>
+                        </div>
                         <div>角色： <span class="role"></span></div>
                         <div>任务配置： <span class="vote"></span></div>
+                        <div><button data-action="next" class="btn btn-md btn-red">开始游戏</button></div>
+                        <div><button data-action="return" class="btn btn-sm btn-white">返回</button></div>
                     </div>
                 `,
             begin_role: {
@@ -107,11 +116,11 @@
             },
             assign: `
                     <div class="game-assign fade-in">
-                        <h1 class="title">分配身份</h1>
+                        <div class="title">分配身份</div>
                         <div>请各玩家依次传递查看自己身份牌信息，传递前请及时把自己身份牌翻回背面，以免泄露信息</div>
-                        <ul class="list"></ul>
-                        <div>所有人都确认完毕自己身份后，点击“开始任务”进行下一步。</p>
-                        <button data-action="next" class="btn">开始任务</button>
+                        <div><ul class="list"></ul></div>
+                        <div>所有人都确认完毕自己身份后，点击“进入任务”进行下一步。</div>
+                        <div><button data-action="next" class="btn btn-md btn-red">进入任务</button></div>
                     </div>
                 `,
             assign_li_back: (index) => {
@@ -187,20 +196,23 @@
                 };
                 return `
                     <div class="game-mission fade-in">
-                        <h1 class="title">进行任务</h1>
+                        <div class="title">进行任务</div>
                         <div>当前是第${round + 1}${_data.role.length >=7 && round === 3 ? '*' : ''}轮，需要${_data.vote[round]}人参与</div>
-                        <div data-action="success" class="btn vote slide-in">
-                            <svg viewbox="0 0 1024 1024">
-                                <use xlink:href="#svgpath-game-O"/>
-                            </svg>
+                        <div class="btns">
+                            <div data-action="success" class="btn btn-white vote slide-in">
+                                <svg viewbox="0 0 1024 1024">
+                                    <use xlink:href="#svgpath-game-O"/>
+                                </svg>
+                            </div>
+                            <div data-action="fail" class="btn btn-white vote slide-in">
+                                <svg viewbox="0 0 1024 1024">
+                                    <use xlink:href="#svgpath-game-X"/>
+                                </svg>
+                            </div>
                         </div>
-                        <div data-action="fail" class="btn vote slide-in">
-                            <svg viewbox="0 0 1024 1024">
-                                <use xlink:href="#svgpath-game-X"/>
-                            </svg>
-                        </div>
+                   
                         <div class=""><span class="voted_count">0</span>/${_data.vote[round]}人已投票</div>
-                        <button data-action="next" class="btn disabled">显示结果</button>
+                        <div><button data-action="next" class="btn btn-md btn-red disabled">显示结果</button></div>
                         <div class="result-list">
                             ${list()}
                         </div>
@@ -224,7 +236,7 @@
                 };
                 _ctn.innerHTML = html.init;
                 _board = _ctn.querySelector('.avalon-board');
-                let rule = _ctn.querySelector('.rule');
+                let rule = _ctn.querySelector('.avalon-rule');
                 _ctn.querySelector('[data-action="rule"]').addEventListener('click', () => {
                     rule.classList[rule.classList.contains('hide') ? 'remove' : 'add']('hide');
                 });
@@ -254,6 +266,10 @@
                 _board.querySelector('[data-action="next"]').addEventListener('click', () => {
                     fn.to_assign();
                 });
+                _board.querySelector('[data-action="return"]').addEventListener('click', () => {
+                    list.classList.remove('hide');
+                    board.classList.add('hide');
+                });
             },
             to_assign: () => {
                 _board.innerHTML = html.assign;
@@ -273,7 +289,12 @@
                     let index = li.getAttribute('data-index');
                     if(index === null) return;
                     index = +index;
-                    li.classList[li.classList.contains('checking') ? 'remove' : 'add']('checking');
+                    let checking = list.querySelector('.checking');
+                    if(checking){
+                        checking.classList.remove('checking');
+                    }else{
+                        li.classList.add('checking');
+                    }
                 });
                 _board.querySelector('[data-action="next"]').addEventListener('click', () => {
                     fn.to_mission(0);
@@ -294,7 +315,7 @@
                         btn.classList.add('voting');
                         setTimeout(() => {
                             btn.classList.remove('voting');
-                        }, 800);
+                        }, 600);
                         voted++;
                         if(action === 'fail' ) result.against++;
                         _board.querySelector('.voted_count').innerText = voted + '';
