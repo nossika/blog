@@ -2,7 +2,7 @@ window.GraffitiUtil = (() => {
     let main_data = [];
     let paint_data = null;
     let [_ctx, _ctx_w, _ctx_h] = [null, 0, 0];
-    let [_shape, _width, _stroke, _fill] = ['line', 2, 'rgba(33,33,33,0.5)', 'rgba(55,33,222,0)'];
+    let [_shape, _width, _stroke, _fill] = ['line', 2, 'rgba(33,33,33,0.8)', 'rgba(55,33,222,0)'];
     let GraffitiUtil = {
         init_editor: (ctx) => {
             _ctx = ctx;

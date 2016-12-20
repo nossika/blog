@@ -27,6 +27,7 @@ button {
   display: block; }
 
 .popup {
+  z-index: 199;
   animation: slide-in .3s ease forwards; }
 
 .popup.default {
@@ -67,16 +68,8 @@ button {
 /* btn */
 .btn {
   font-family: 'Microsoft YaHei', Helvetica, Arial, monospace;
-  background-color: #6495ED;
-  color: #fff;
+  position: relative;
   cursor: pointer; }
-  .btn:hover {
-    background-color: #74a5ED; }
-  .btn:active {
-    background-color: #5485ED; }
-  .btn.disabled {
-    cursor: not-allowed;
-    background-color: #888; }
 
 .btn-lg {
   font-size: 1.2rem;
@@ -97,6 +90,17 @@ button {
   line-height: 0.8rem;
   padding: 0.3rem 0.5rem;
   border-radius: 0.2rem; }
+
+.btn-default {
+  color: #fff;
+  background-color: #6495ED; }
+  .btn-default:hover {
+    background-color: #74a5ED; }
+  .btn-default:active {
+    background-color: #5485ED; }
+  .btn-default.disabled {
+    cursor: not-allowed;
+    background-color: #888; }
 
 .btn-red {
   color: #fff;
@@ -674,6 +678,8 @@ button {
       float: left;
       width: 40px;
       height: 40px;
+      line-height: 40px;
+      text-align: center;
       border-radius: 5px;
       background: #fff;
       margin: 0 10px;
@@ -690,7 +696,7 @@ button {
   width: 30px;
   height: 30px;
   padding: 5px;
-  fill: red;
+  fill: #000;
   cursor: pointer; }
 
 .line-block {

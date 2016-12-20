@@ -8,9 +8,10 @@ window.ColorPicker = (() => {
             return container;
         },
         color_block: (r, g, b, a) => {
+            a = a === undefined ? 1 : a;
             let color_block = document.createElement('div');
             color_block.className = `color-block`;
-            color_block.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a === undefined ? 1 : a})`;
+            color_block.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
             color_block.rgba = [r, g, b, a];
             return color_block;
         },

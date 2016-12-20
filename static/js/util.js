@@ -189,31 +189,38 @@ window.Util = (()=>{
             }
             return new_arr;
         },
+        parse_rgba: (rgba) => {
+            let [r, g, b, a] = rgba.match(/\(.*\)/g)[0].replace(/[\(\)]/g,'').split(',').map(str => +str.trim());
+            return [r, g, b, a]
+        },
         btn_popup: (e, config) => {
             let [w, h, mode, offset] = [config.w || 100, config.h || 100, config.mode || 0, config.offset || 0];
             let popup = document.createElement('div');
             popup.className = 'popup default';
-    
-            let [left, top] = [e.clientX - e.offsetX, e.clientY - e.offsetY],
-                [btn_w, btn_h] = [e.target.offsetWidth, e.target.offsetHeight];
+            let target = e.target;
+            while(!target.classList.contains('btn')) {
+                target = target.parentNode;
+            }
+            let [left, top] = [e.clientX - e.layerX, e.clientY - e.layerY],
+                [btn_w, btn_h] = [target.offsetWidth, target.offsetHeight];
             switch (mode) {
                 case 0:
-                    if(top + btn_h + offset + h > document.body.clientHeight){
+                    if(top + btn_h + offset + h > document.documentElement.clientHeight){
                         top -= offset + h;
                     }else{
                         top += btn_h + offset;
                     }
-                    if(left + w > document.body.clientWidth){
+                    if(left + w > document.documentElement.clientHeight){
                         left -= w - btn_w;
                     }
                     break;
                 case 1:
-                    if(left + btn_w + offset + w > document.body.clientWidth){
+                    if(left + btn_w + offset + w > document.documentElement.clientHeight){
                         left -= offset + w;
                     }else{
                         left += btn_w + offset;
                     }
-                    if(top + h > document.body.clientHeight){
+                    if(top + h > document.documentElement.clientHeight){
                         top -= h - btn_h;
                     }
                     break;

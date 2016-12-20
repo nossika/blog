@@ -10,13 +10,22 @@
                 GraffitiUtil.draw_width(),
                 GraffitiUtil.draw_shape(),
             ];
-            controller.querySelector('[data-action="stroke"]').innerText = stroke;
-            controller.querySelector('[data-action="fill"]').innerText = fill;
+
+            let stroke_btn = controller.querySelector('[data-action="stroke"]');
+            let stroke_none = Util.parse_rgba(stroke)[3] === 0;
+            stroke_btn.style.backgroundColor = stroke_none ? '#fff' : stroke;
+            stroke_btn.innerText = stroke_none ? 'X' : '';
+
+            let fill_btn = controller.querySelector('[data-action="fill"]');
+            let fill_none = Util.parse_rgba(fill)[3] === 0;
+            fill_btn.style.backgroundColor = fill_none ? '#fff' : fill;
+            fill_btn.innerText = fill_none ? 'X' : '';
+
             controller.querySelector('[data-action="width"]').innerHTML
                 = FN.width_block_html(width);
             controller.querySelector('[data-action="shape"]').innerHTML
                 = FN.shape_block_html(shape);
-            console.log([stroke, fill, width, shape])
+
         },
         shape_block_html: (shape) => {
             return `
@@ -102,7 +111,6 @@
 
             window.resize_fn['graffiti'] = () => {
                 if(!document.querySelector('.graffiti-board')) return;
-                document.querySelector('.graffiti-board')
                 Waterfall.fall();
             };
         }
@@ -137,7 +145,7 @@
                 color_none: true,
                 callbacks: {
                     onpick: (color) => {
-                        GraffitiUtil.draw_stroke(`rgba(${color[0]},${color[1]},${color[2]},${color[3] === undefined ? 0.8 : color[3]})`);
+                        GraffitiUtil.draw_stroke(`rgba(${color[0]},${color[1]},${color[2]},${color[3] === 0 ? 0 : 0.8})`);
                         FN.update_btns();
                         popup.parentNode.removeChild(popup);
                     }
@@ -153,7 +161,7 @@
                 color_none: true,
                 callbacks: {
                     onpick: (color) => {
-                        GraffitiUtil.draw_fill(`rgba(${color[0]},${color[1]},${color[2]},${color[3] === undefined ? 0.8 : color[3]})`);
+                        GraffitiUtil.draw_fill(`rgba(${color[0]},${color[1]},${color[2]},${color[3] === 0 ? 0 : 0.8})`);
                         FN.update_btns();
                         popup.parentNode.removeChild(popup);
                     }

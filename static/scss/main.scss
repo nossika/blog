@@ -33,6 +33,7 @@ button{
   display: block;
 }
 .popup{
+  z-index: 199;
   animation: slide-in .3s ease forwards;
 }
 .popup.default{
@@ -79,19 +80,9 @@ button{
 /* btn */
 .btn{
   font-family: 'Microsoft YaHei', Helvetica, Arial, monospace;
-  background-color: #6495ED;
-  color: #fff;
+  position: relative;
   cursor: pointer;
-  &:hover{
-    background-color: #74a5ED;
-  }
-  &:active{
-    background-color: #5485ED;
-  }
-  &.disabled {
-    cursor: not-allowed;
-    background-color: #888;
-  }
+
 }
 
 .btn-lg{
@@ -116,6 +107,21 @@ button{
   padding: 0.3rem 0.5rem;
   border-radius: 0.2rem;
 }
+.btn-default{
+  color: #fff;
+  background-color: #6495ED;
+  &:hover{
+    background-color: #74a5ED;
+  }
+  &:active{
+    background-color: #5485ED;
+  }
+  &.disabled {
+    cursor: not-allowed;
+    background-color: #888;
+  }
+}
+
 .btn-red{
   color:#fff;
   background-color:#d44f4f;
@@ -826,6 +832,8 @@ button{
       float: left;
       width: 40px;
       height: 40px;
+      line-height: 40px;
+      text-align: center;
       border-radius: 5px;
       background: #fff;
       margin: 0 10px;
@@ -842,11 +850,12 @@ button{
     }
   }
 }
+
 .shape-block{
   width: 30px;
   height: 30px;
   padding: 5px;
-  fill: red;
+  fill: #000;
   cursor: pointer;
 }
 .line-block{
