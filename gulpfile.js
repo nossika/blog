@@ -22,6 +22,7 @@ gulp.task('compile_scss', () => {
         .pipe(gulp.dest('static/dist/css'));
 });
 gulp.watch('static/scss/*.scss', ['compile_scss']);
+gulp.watch(['static/js/util.js', 'static/js/utils/*.js'], ['package_js']);
 
 gulp.task('default', ['package_js', 'compile_scss'], () => {
     console.log('done');

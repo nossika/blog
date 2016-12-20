@@ -36,7 +36,7 @@ module.exports = (router) => {
         let query = this.request.query;
         let [limit, skip] = [+query.limit, +query.skip];
         let list = yield new Promise((res, rej) => {
-            Graffiti.find({}).limit(limit).skip(skip).toArray((e, d) => {
+            Graffiti.find({}).sort({time: -1}).limit(limit).skip(skip).toArray((e, d) => {
                 if(e) { rej(null); return; }
                 res(d);
             });

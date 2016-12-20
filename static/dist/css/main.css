@@ -502,6 +502,18 @@ button {
   #game-board .avalon-board .game-begin .intro {
     text-indent: 2rem;
     line-height: 1.5rem; }
+  #game-board .avalon-board .game-begin .select {
+    overflow: hidden; }
+    #game-board .avalon-board .game-begin .select > span {
+      display: inline-block;
+      height: 24px;
+      line-height: 24px;
+      float: left;
+      margin: 0 5px; }
+    #game-board .avalon-board .game-begin .select input {
+      display: inline-block;
+      height: 24px;
+      width: 100px; }
   #game-board .avalon-board .game-assign > div {
     margin: 15px 0;
     max-width: 100%; }
@@ -568,6 +580,18 @@ button {
   100% {
     transform: rotate(50deg) rotateX(60deg) rotateY(60deg) translate(200px, -200px);
     opacity: 0; } }
+
+@keyframes voting-left {
+  0% {
+    transform: rotate(0deg) rotateX(0deg) rotateY(0deg) translate(0, 0);
+    opacity: 1; }
+  100% {
+    transform: rotate(-50deg) rotateX(-60deg) rotateY(60deg) translate(-200px, -200px);
+    opacity: 0; } }
+  #game-board .avalon-board .game-mission .voting {
+    animation: voting .8s ease; }
+  #game-board .avalon-board .game-mission .voting-left {
+    animation: voting-left .8s ease; }
   #game-board .avalon-board .game-mission > div {
     margin: 15px 0;
     max-width: 100%; }
@@ -584,15 +608,41 @@ button {
         fill: #5485ED; }
       #game-board .avalon-board .game-mission .btns .btn.vote[data-action="fail"] {
         fill: #d83c3c; }
-  #game-board .avalon-board .game-mission .voting {
-    animation: voting .8s ease; }
+  #game-board .avalon-board .game-mission .result-list {
+    display: flex;
+    width: 60%;
+    justify-content: space-around; }
+    #game-board .avalon-board .game-mission .result-list .round-result {
+      width: 80px;
+      height: 50px;
+      border-radius: 8px;
+      text-align: center;
+      line-height: 50px;
+      color: #fff;
+      position: relative; }
+      #game-board .avalon-board .game-mission .result-list .round-result::after {
+        content: '';
+        position: absolute;
+        top: 19px;
+        right: -20px;
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-left: 10px solid #888; }
+      #game-board .avalon-board .game-mission .result-list .round-result:last-child::after {
+        display: none; }
+      #game-board .avalon-board .game-mission .result-list .round-result.pending {
+        background: #888; }
+      #game-board .avalon-board .game-mission .result-list .round-result.red {
+        background: #d83c3c; }
+      #game-board .avalon-board .game-mission .result-list .round-result.blue {
+        background: #5485ED; }
   #game-board .avalon-rule {
-    border: 1px solid #6495ED;
+    border: 1px solid #5F9EA0;
     margin-bottom: 50px;
     background: #fff;
     color: #666; }
     #game-board .avalon-rule h2 {
-      background: #6495ED;
+      background: #5F9EA0;
       color: #fff;
       letter-spacing: 1rem;
       line-height: 2rem;
@@ -608,26 +658,45 @@ button {
 
 /* graffiti */
 #graffiti-editor {
-  width: 800px;
+  width: 80%;
   height: 500px;
   margin: 50px;
   border: 1px solid #111; }
 
 .graffiti-controller {
-  width: 200px;
-  position: absolute;
-  right: 100px;
-  top: 100px; }
+  overflow: hidden; }
+  .graffiti-controller .draw-group {
+    float: left;
+    display: flex;
+    align-items: center;
+    height: 40px; }
+    .graffiti-controller .draw-group .draw {
+      float: left;
+      width: 40px;
+      height: 40px;
+      border-radius: 5px;
+      background: #fff;
+      margin: 0 10px;
+      cursor: pointer; }
+  .graffiti-controller .btn-group {
+    float: left;
+    display: flex;
+    align-items: center;
+    height: 40px; }
+    .graffiti-controller .btn-group .btn {
+      margin: 0 10px; }
 
 .shape-block {
   width: 30px;
   height: 30px;
+  padding: 5px;
   fill: red;
   cursor: pointer; }
 
 .line-block {
   width: 30px;
   height: 30px;
+  padding: 5px;
   cursor: pointer;
   display: flex;
   align-items: center; }

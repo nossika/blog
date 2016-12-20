@@ -1,5 +1,5 @@
 window.Waterfall = (() => {
-    let _ctn = null, _space = [20, 20], _box_w, _data, _selector;
+    let _ctn = null, _space = [20, 20], _data, _selector;
     let Waterfall = {
         init: (container, selector, config = {}) => {
             _ctn = container;
@@ -8,13 +8,14 @@ window.Waterfall = (() => {
             }
             _selector = selector;
             _space = config.space || _space;
+            _data = null;
             Waterfall.fall();
         },
         fall: (cache) => {
             if(!_ctn) return;
             let box = _ctn.querySelector(_selector);
             if(!box) return;
-            _box_w = box.offsetWidth + _space[1] * 2;
+            let _box_w = box.offsetWidth + _space[1] * 2;
             if(!cache || !_data) {
                 _data = [];
                 _data.count = 0;
@@ -53,6 +54,10 @@ window.Waterfall = (() => {
                 }
             });
             _ctn.style.height = _ctn_h + 'px';
+        },
+        reset: () => {
+            _data = null;
+            _ctn.innerHTML = '';
         }
     };
     return Waterfall;

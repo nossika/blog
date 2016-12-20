@@ -96,9 +96,9 @@
                     <div class="game-begin fade-in">
                         <div class="title">阿瓦隆</div>
                         <div class="intro">这是一个5-10人的桌面游戏，分为红、蓝两方阵营，进行共计5轮的任务。红方需要辨认敌友、促进任务的成功以及帮助隐藏梅林。蓝方需要伪装成好人，从中作梗使任务失败，或者找出红方中的梅林刺杀。详细规则可随时在游戏过程中点击“查看规则”来打开/关闭。</div>
-                        <div>
-                            <label>游戏人数：<span class="player"></span>人</label>
-                            <input class="input" type="range" min="5" max="10" value="${player}"/>
+                        <div class="select">
+                            <span>游戏人数：<span class="player"></span>人</span>
+                            <span><input class="input" type="range" min="5" max="10"/></span>
                         </div>
                         <div>角色： <span class="role"></span></div>
                         <div>任务配置： <span class="vote"></span></div>
@@ -181,6 +181,7 @@
                 `
             },
             mission: (round) => {
+                console.log(_data)
                 let list = () => {
                     let html = ``;
                     for(let i = 0; i < 5; i++){
@@ -188,7 +189,7 @@
                         if(!_data.result[i]){
                             div = `<div class="round-result pending">${i + 1}</div>`;
                         }else{
-                            div = `<div class="round-result ${_data.result[i].success ? 'blue' : 'red'}">${_data.result[i].against}失败票</div>`
+                            div = `<div class="round-result ${_data.result[i].success ? 'blue' : 'red'}">${_data.vote[i] - _data.result[i].against}O/${_data.result[i].against}X</div>`
                         }
                         html += div;
                     }
@@ -312,12 +313,13 @@
                     let btn = _board.querySelector(`[data-action="${action}"]`);
                     btn.addEventListener('click', () => {
                         if(voted >= _data.vote[round]) return;
-                        btn.classList.add('voting');
+                        btn.classList.add(action === 'fail' ? 'voting' : 'voting-left');
                         setTimeout(() => {
                             btn.classList.remove('voting');
+                            btn.classList.remove('voting-left');
                         }, 600);
                         voted++;
-                        if(action === 'fail' ) result.against++;
+                        if(action === 'fail') result.against++;
                         _board.querySelector('.voted_count').innerText = voted + '';
                         if(voted >= _data.vote[round]){
                             result.success = result.against <= (_data.role.length >= 7 && round === 3? 1 : 0);

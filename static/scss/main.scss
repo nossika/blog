@@ -617,6 +617,21 @@ button{
         text-indent: 2rem;
         line-height: 1.5rem;
       }
+      .select{
+        overflow: hidden;
+        &>span{
+          display: inline-block;
+          height: 24px;
+          line-height: 24px;
+          float: left;
+          margin: 0 5px;
+        }
+        input{
+          display: inline-block;
+          height:24px;
+          width: 100px;
+        }
+      }
     }
     .game-assign{
       &>div{
@@ -696,7 +711,16 @@ button{
         0%{transform:rotate(0deg) rotateX(0deg) rotateY(0deg) translate(0,0);opacity: 1;}
         100%{transform:rotate(50deg) rotateX(60deg) rotateY(60deg) translate(200px, -200px);opacity: 0;}
       }
-
+      @keyframes voting-left {
+        0%{transform:rotate(0deg) rotateX(0deg) rotateY(0deg) translate(0,0);opacity: 1;}
+        100%{transform:rotate(-50deg) rotateX(-60deg) rotateY(60deg) translate(-200px, -200px);opacity: 0;}
+      }
+      .voting{
+        animation: voting .8s ease;
+      }
+      .voting-left{
+        animation: voting-left .8s ease;
+      }
       &>div{
         margin: 15px 0;
         max-width: 100%;
@@ -719,18 +743,54 @@ button{
         }
 
       }
-      .voting{
-        animation: voting .8s ease;
+      .result-list{
+        display: flex;
+        width: 60%;
+        justify-content: space-around;
+        .round-result{
+          $block_height: 50px;
+          width: 80px;
+          height: $block_height;
+          border-radius: 8px;
+          text-align: center;
+          line-height: 50px;
+          color: #fff;
+          position: relative;
+          &::after{
+            $height: 12px;
+            $width: 10px;
+            content: '';
+            position: absolute;
+            top: ($block_height - $height)/2;
+            right: -20px;
+            border-top: ($height/2) solid transparent;
+            border-bottom: ($height/2) solid transparent;
+            border-left: $width solid #888;
+          }
+          &:last-child::after{
+            display: none;
+          }
+          &.pending{
+            background: #888;
+          }
+          &.red{
+            background: $red-camp;
+          }
+          &.blue{
+            background: $blue-camp;
+          }
+        }
+
       }
     }
   }
   .avalon-rule{
-    border: 1px solid #6495ED;
+    border: 1px solid #5F9EA0;
     margin-bottom: 50px;
     background: #fff;
     color: #666;
     h2{
-      background: #6495ED;
+      background: #5F9EA0;
       color: #fff;
       letter-spacing: 1rem;
       line-height: 2rem;
@@ -750,26 +810,49 @@ button{
 }
 /* graffiti */
 #graffiti-editor {
-  width: 800px;
+  width: 80%;
   height: 500px;
   margin: 50px;
   border: 1px solid #111;
 }
 .graffiti-controller{
-  width: 200px;
-  position: absolute;
-  right: 100px;
-  top : 100px;
+  overflow: hidden;
+  .draw-group{
+    float: left;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    .draw{
+      float: left;
+      width: 40px;
+      height: 40px;
+      border-radius: 5px;
+      background: #fff;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+  }
+  .btn-group{
+    float:left;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    .btn{
+      margin: 0 10px;
+    }
+  }
 }
 .shape-block{
   width: 30px;
   height: 30px;
+  padding: 5px;
   fill: red;
   cursor: pointer;
 }
 .line-block{
   width: 30px;
   height: 30px;
+  padding: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;

@@ -193,6 +193,7 @@ window.Util = (()=>{
             let [w, h, mode, offset] = [config.w || 100, config.h || 100, config.mode || 0, config.offset || 0];
             let popup = document.createElement('div');
             popup.className = 'popup default';
+    
             let [left, top] = [e.clientX - e.offsetX, e.clientY - e.offsetY],
                 [btn_w, btn_h] = [e.target.offsetWidth, e.target.offsetHeight];
             switch (mode) {

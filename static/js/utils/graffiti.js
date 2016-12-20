@@ -15,7 +15,7 @@ window.GraffitiUtil = (() => {
             _ctx_h = _ctx.canvas.offsetHeight;
             _ctx.canvas.width = _ctx_w;
             _ctx.canvas.height = _ctx_h;
-            GraffitiUtil.draw_canvas(main_data, _ctx)
+            GraffitiUtil.draw(main_data, _ctx)
         },
         canvas_event: () => {
             _ctx.canvas.addEventListener('mousedown', (e) => {
@@ -34,20 +34,20 @@ window.GraffitiUtil = (() => {
         },
         painting: (e) => {
             paint_data.points.push([e.offsetX, e.offsetY]);
-            GraffitiUtil.draw_canvas(main_data.concat([paint_data]), _ctx, true);
+            GraffitiUtil.draw(main_data.concat([paint_data]), _ctx, true);
         },
         stop_painting: (e) => {
             paint_data.points = Shapes[paint_data.shape].pick(paint_data.points);
             main_data.push(paint_data);
-            GraffitiUtil.draw_canvas(main_data, _ctx);
+            GraffitiUtil.draw(main_data, _ctx);
             _ctx.canvas.removeEventListener('mousemove', GraffitiUtil.painting);
             document.removeEventListener('mouseup', GraffitiUtil.stop_painting);
         },
         undo_paint: () => {
             main_data.pop();
-            GraffitiUtil.draw_canvas(main_data, _ctx);
+            GraffitiUtil.draw(main_data, _ctx);
         },
-        draw_canvas: (main_data, ctx, editing) => {
+        draw: (main_data, ctx, editing) => {
             ctx.clearRect(0,0,_ctx.canvas.width,_ctx.canvas.height);
             main_data.forEach((paint_data, index) => {
                 Shapes[paint_data.shape].draw(paint_data, ctx, editing && index === main_data.length - 1);
@@ -85,17 +85,21 @@ window.GraffitiUtil = (() => {
                 h: _ctx_h
             }
         },
-        set_shape: (shape) => {
-            _shape = shape;
+        draw_shape: (shape) => {
+            _shape = shape === undefined ? _shape : shape;
+            return _shape;
         },
-        set_width: (width) => {
-            _width = width;
+        draw_width: (width) => {
+            _width = width === undefined ? _width : width;
+            return _width;
         },
-        set_stroke: (stroke) => {
-            _stroke = stroke;
+        draw_stroke: (stroke) => {
+            _stroke = stroke === undefined ? _stroke : stroke;
+            return _stroke;
         },
-        set_fill: (fill) => {
-            _fill = fill;
+        draw_fill: (fill) => {
+            _fill = fill === undefined ? _fill : fill;
+            return _fill;
         },
     };
 
