@@ -231,7 +231,7 @@ window.PlayerUtil = ((Util) => {
                 callback: (data, status) => {
                     if(status === 200) {
                         let list = JSON.parse(data);
-                        (callback || function () {})(list);
+                        callback && callback(list);
                     }
                 }
             });

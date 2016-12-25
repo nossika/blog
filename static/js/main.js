@@ -97,11 +97,11 @@
                         }
                         container.appendChild(script);
                     });
-                    (cb||function(){})(status);
+                    cb && cb(status);
                 }
             });
         },
-        init_popup: ()=> {
+        init_main_event: () => {
             document.body.addEventListener('click', (e) => {
                 let top = e.target;
                 while(top && top !== document && !top.classList.contains('popup')){
@@ -112,9 +112,11 @@
                     list.parentNode.removeChild(list);
                 });
             });
-        },
-        init_window_event: () => {
-
+            window.addEventListener('scroll', () => {
+                [].slice.call(document.querySelectorAll('.popup')).forEach((list) => {
+                    list.parentNode.removeChild(list);
+                });
+            });
         }
     };
     const _themes = [
@@ -148,7 +150,7 @@
     FloatUtil.init_float(document.querySelector('#nav_canvas').getContext('2d'),{
 
     });
-    FN.init_popup();
+    FN.init_main_event();
     setTimeout(()=>{
         FN.init_nav();
     },0);

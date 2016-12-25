@@ -1,7 +1,8 @@
 (()=>{
-    GraffitiUtil.init_editor(document.querySelector('#graffiti-editor').getContext('2d'));
+    GraffitiUtil.init_editor(document.querySelector('#graffiti-canvas').getContext('2d'));
     let controller = document.querySelector('.graffiti-controller');
-
+    let canvas_board = document.querySelector('.graffiti-board');
+    let status = document.querySelector('.graffiti-status');
     const FN = {
         update_btns: () => {
             let [stroke, fill, width, shape] = [
@@ -48,7 +49,7 @@
                 url: '/graffiti/list',
                 data: {
                     limit: config.limit,
-                    skip: config.skip
+                    skip: config.skip || 0
                 },
                 method: 'get',
                 callback: (d) => {
@@ -58,30 +59,39 @@
                         d = null;
                     }
                     if(!d) return;
-                    let canvas_board = document.querySelector('.graffiti-board');
+                
                     d.forEach((canvas_data) => {
-                        let main_data = canvas_data.data;
+                        let main_data = canvas_data.data,   
+                            time = Util.format_date(canvas_data.time);
                         if(!main_data) return;
                         let canvas = document.createElement('canvas'),
                             ctx = canvas.getContext('2d');
-                        let [x_min, x_max, y_min, y_max] = GraffitiUtil.get_point_range(main_data);
+                        let text_h = 14;
                         let padding = 30;
+                        let width = 300;
+
+                        let [x_min, x_max, y_min, y_max] = GraffitiUtil.get_point_range(main_data);
+
                         x_min -= padding;
                         x_max += padding;
                         y_min -= padding;
                         y_max += padding;
-                        let width = 300;
                         let scale = width / (x_max - x_min);
                         scale = Math.min(scale, 1.2);
                         canvas.width = width;
-                        canvas.height = scale * (y_max - y_min);
+                        canvas.height = scale * (y_max - y_min) + text_h + 10;
+                        ctx.save();
                         ctx.scale(scale, scale);
                         ctx.translate(-x_min, -y_min);
                         GraffitiUtil.draw(main_data, ctx);
+                        ctx.restore();
+                        ctx.font = `${text_h}px/${text_h}px Microsoft YaHei`;
+                        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                        ctx.fillText(time, (+canvas.width - ctx.measureText(time).width) / 2, +canvas.height - 10);
                         canvas_board.appendChild(canvas);
                     });
                     Waterfall.fall(true);
-                    (cb || function(){})();
+                    cb && cb(d.length);
                 }
             });
         },
@@ -90,15 +100,18 @@
                 if(!document.querySelector('.graffiti-board')) return;
                 if(window.scroll_fn['graffiti'].locked) return;
                 let body = document.body;
-                if(body.scrollTop + document.documentElement.clientHeight > body.scrollHeight - 150) {
+                let list_count = canvas_board.querySelectorAll('canvas').length;
+                if(!list_count || body.scrollTop + document.documentElement.clientHeight > body.scrollHeight - 150) {
                     window.scroll_fn['graffiti'].locked = true;
                     let lock_timer = setTimeout(() => {
                         window.scroll_fn['graffiti'].locked = false;
                     }, 3000);
+                    status.innerText = 'loading...';
                     FN.get_graffiti({
                         limit: 30,
-                        skip: 0
-                    }, () => {
+                        skip: list_count
+                    }, (len) => {
+                        if(len < 30) status.innerText = 'end';
                         window.scroll_fn['graffiti'].locked = false;
                         clearTimeout(lock_timer);
                     });
@@ -208,8 +221,7 @@
                 method: 'post',
                 callback: (d) => {
                     Waterfall.reset();
-                    FN.get_graffiti(30, 0);
-                    console.log(d)
+                    window.scroll_fn['graffiti']();
                 }
             })
         });
@@ -220,6 +232,7 @@
     Waterfall.init(document.querySelector('.graffiti-board'), 'canvas', {
         space: [20, 20]
     });
-    FN.get_graffiti(30, 0);
+
     FN.window_event();
+    window.scroll_fn['graffiti']();
 })();

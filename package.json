@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index",
+    "gulp": "gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -11,7 +13,7 @@
     "url": "git+https://github.com/nossika/blog.git"
   },
   "author": "NossiKa",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/nossika/blog/issues"
   },

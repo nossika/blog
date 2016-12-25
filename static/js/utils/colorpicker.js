@@ -56,7 +56,7 @@ window.ColorPicker = (() => {
                     block = block.parentNode;
                 }
                 if(!block.classList.contains('color-block')) return;
-                (_callbacks.onpick || function(){})(block.rgba);
+                _callbacks.onpick && _callbacks.onpick(block.rgba);
             });
         }
     };

@@ -1,27 +1,28 @@
 
 
 
-<div>
-    <canvas id="graffiti-editor"></canvas>
-</div>
-<div class="graffiti-controller">
-    <div class="draw-group">
-        <div data-action="shape" title="形状" class="btn draw"></div>
-        <div data-action="stroke" title="线条色" class="btn draw"></div>
-        <div data-action="fill" title="填充色" class="btn draw"></div>
-        <div data-action="width" title="粗细" class="btn draw"></div>
-    </div>
-    <div class="btn-group">
-        <button data-action="undo" class="btn btn-green btn-md">撤销</button>
-        <button data-action="download" class="btn btn-green btn-md">下载</button>
-        <button data-action="submit" class="btn btn-red btn-md">提交</button>
-    </div>
+<div class="graffiti-editor slide-in">
+    <canvas id="graffiti-canvas"></canvas>
+    <div class="graffiti-controller">
+        <div class="draw-group">
+            <div class="desc">形状</div><div data-action="shape" title="形状" class="btn"></div>
+            <div class="desc">线条</div><div data-action="stroke" title="线条" class="btn"></div>
+            <div class="desc">填充</div><div data-action="fill" title="填充" class="btn"></div>
+            <div class="desc">粗细</div><div data-action="width" title="粗细" class="btn"></div>
+        </div>
+        <div class="btn-group">
+            <button data-action="undo" class="btn btn-green btn-md">撤销</button>
+            <button data-action="download" class="btn btn-green btn-md">下载</button>
+            <button data-action="submit" class="btn btn-red btn-md">提交</button>
+        </div>
 
+    </div>
 </div>
+
 <div class="graffiti-board">
 
 </div>
-
+<div class="graffiti-status"></div>
 <svg width="0" height="0">
     <defs>
         <path stroke="#fff" stroke-width="20" id="svgpath_shape_line" d="M516.78 995.072l-25.754-56.542c98.445-44.836 153.147-106.751 158.193-179.053 4.954-70.997-40.929-146.257-119.745-196.414-53.102-33.792-113.829-73.721-162.453-119.991-58.711-55.867-90.401-111.703-96.877-170.699-4.175-38.043 2.549-77.095 19.988-116.073 18.075-40.398 48.326-81.967 89.908-123.55l43.933 43.933c-67.45 67.45-98.427 131.007-92.071 188.909 10.683 97.321 119.938 174.421 230.926 245.051 47.034 29.93 85.633 68.457 111.628 111.415 27.355 45.206 40.058 94.22 36.741 141.742-3.225 46.197-20.934 89.331-52.635 128.207-33.13 40.629-80.832 75.303-141.783 103.062z"></path>

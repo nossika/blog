@@ -38,3 +38,5 @@ io.of('/avalon').on('connection', (socket) => {
         Reflect.deleteProperty(Users, socket_id);
     });
 });
+
+console.log(7777)

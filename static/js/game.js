@@ -97,11 +97,11 @@
                         <div class="title">阿瓦隆</div>
                         <div class="intro">这是一个5-10人的桌面游戏，分为红、蓝两方阵营，进行共计5轮的任务。红方需要辨认敌友、促进任务的成功以及帮助隐藏梅林。蓝方需要伪装成好人，从中作梗使任务失败，或者找出红方中的梅林刺杀。详细规则可随时在游戏过程中点击“查看规则”来打开/关闭。</div>
                         <div class="select">
-                            <span>游戏人数：<span class="player"></span>人</span>
+                            <span class="desc">游戏人数：<span class="player"></span>人</span>
                             <span><input class="input" type="range" min="5" max="10"/></span>
                         </div>
-                        <div>角色： <span class="role"></span></div>
-                        <div>任务配置： <span class="vote"></span></div>
+                        <div><span class="desc">角色： </span><span class="role"></span></div>
+                        <div><span class="desc">任务配置： </span><span class="vote"></span></div>
                         <div><button data-action="next" class="btn btn-md btn-red">开始游戏</button></div>
                         <div><button data-action="return" class="btn btn-sm btn-white">返回</button></div>
                     </div>
@@ -136,11 +136,13 @@
                     let info = '';
                     let check_index = (check_list) => {
                         let arr = [];
-                        _data.role.forEach((role, index) => {
-                            if(check_list.includes(role)){
-                                arr.push(index + 1);
+                        check_list.forEach((role) => {
+                            let index = _data.role.indexOf(role) + 1;
+                            if(index) {
+                                arr.push(index);
                             }
                         });
+                        arr.sort();
                         return arr.join('、');
                     };
                     switch (role) {
@@ -181,15 +183,14 @@
                 `
             },
             mission: (round) => {
-                console.log(_data)
                 let list = () => {
                     let html = ``;
-                    for(let i = 0; i < 5; i++){
+                    for(let i = 0; i < _data.vote.length; i++){
                         let div = ``;
                         if(!_data.result[i]){
                             div = `<div class="round-result pending">${i + 1}</div>`;
                         }else{
-                            div = `<div class="round-result ${_data.result[i].success ? 'blue' : 'red'}">${_data.vote[i] - _data.result[i].against}O/${_data.result[i].against}X</div>`
+                            div = `<div class="round-result ${_data.result[i].success ? 'blue' : 'red'}">${_data.vote[i] - _data.result[i].against}<span class="ox">O</span>/${_data.result[i].against}<span class="ox">X</span></div>`
                         }
                         html += div;
                     }
@@ -225,6 +226,26 @@
                         </svg>
                     </div>
                 `
+            },
+            result: (result) => {
+                let html = result ?
+                    `   
+                        <div>三次任务成功</div>
+                        <div>请<span class="red-camp">刺客</span>刺杀<span class="blue-camp">梅林</span>，若刺杀成功，<span class="red-camp">红方</span>获胜；若刺杀失败，<span class="blue-camp">蓝方</span>获胜</div>
+                        `
+                    : `
+                        <div>三次任务失败</div>
+                        <div><span class="red-camp">红方</span>获胜</div>
+                        `;
+
+                return `
+                    <div class="game-result fade-in">
+                        <div class="title">游戏结果</div>
+                        <div class="desc">
+                            ${html}
+                        </div>
+                    </div>
+                `;
             }
         };
         let fn = {
@@ -309,15 +330,17 @@
                 };
                 let voted = 0;
                 ['success', 'fail'].forEach((action) => {
-                    console.log(`[data-action="${action}"]`)
                     let btn = _board.querySelector(`[data-action="${action}"]`);
                     btn.addEventListener('click', () => {
                         if(voted >= _data.vote[round]) return;
                         btn.classList.add(action === 'fail' ? 'voting' : 'voting-left');
-                        setTimeout(() => {
+
+                        let animationend = () => {
                             btn.classList.remove('voting');
                             btn.classList.remove('voting-left');
-                        }, 600);
+                            btn.removeEventListener('animationend', animationend);
+                        };
+                        btn.addEventListener('animationend', animationend);
                         voted++;
                         if(action === 'fail') result.against++;
                         _board.querySelector('.voted_count').innerText = voted + '';
@@ -348,7 +371,7 @@
                 });
             },
             to_result: (success) => {
-                _board.innerHTML = success;
+                _board.innerHTML = html.result(success);
             }
         };
         return fn;
@@ -370,11 +393,12 @@
         let util = games[game]();
         util.init(board);
         target.classList.add('enlarge-out');
-        setTimeout(() => {
+        let animationend = () => {
             target.classList.remove('enlarge-out');
             list.classList.add('hide');
             board.classList.remove('hide');
-        }, 250);
-
+            target.removeEventListener('animationend', animationend);
+        };
+        target.addEventListener('animationend', animationend);
     });
 })();

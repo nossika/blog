@@ -30,7 +30,7 @@ window.Util = (()=>{
                 _origin.value = this._value;
                 document.addEventListener('mousemove', dot_mmove);
                 document.addEventListener('mouseup', dot_mup);
-                (this.event.begin||function(){})();
+                this.event.begin && this.event.begin();
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
@@ -38,12 +38,12 @@ window.Util = (()=>{
             let dot_mmove = (e) => {
                 let value = _origin.value + ((this._ori === 'x' ? e.clientX  - _origin.client : _origin.client - e.clientY)) / (this._bar_len - (!this._non_overflow ? 0 : this._dot_rad * 2));
                 this.set_value(value);
-                (this.event.drag||function(){})();
+                this.event.drag && this.event.drag();
             };
             let dot_mup = (e) => {
                 document.removeEventListener('mousemove', dot_mmove);
                 document.removeEventListener('mouseup', dot_mup);
-                (this.event.end||function(){})();
+                this.event.end && this.event.end();
             };
 
             dot.addEventListener('mousedown', dot_mdown);
@@ -59,7 +59,7 @@ window.Util = (()=>{
                 let value = !this._non_overflow ? e_offset / this._bar_len : (e_offset - this._dot_rad) / (this._bar_len - this._dot_rad * 2);
                 this.set_value(value);
                 dot_mdown(e);
-                (this.event.click||function(){})();
+                this.event.click && this.event.click();
             });
 
             this.elem = {
@@ -82,7 +82,7 @@ window.Util = (()=>{
             this.elem.dot.style[this._ori === 'x' ? 'left' : 'bottom'] = `calc(${value * 100 * (!this._non_overflow ? 1 : (1 - this._dot_rad * 2 / this._bar_len))}% - ${!this._non_overflow ? this._dot_rad : 0}px)`;
             this.elem.bar.style[this._ori === 'x' ? 'width' : 'height'] = `${value*100}%`;
             if(this._value !== value) {
-                (this.event.change||function(){})(value, type)
+                this.event.change && this.event.change(value, type)
             };
             this._value = value;
         };
@@ -188,6 +188,12 @@ window.Util = (()=>{
                 new_arr.push(arr.splice(Math.floor(Math.random() * arr.length), 1)[0]);
             }
             return new_arr;
+        },
+        format_date: (date) => {
+            date = new Date(date);
+            let [y, m, d] = [date.getFullYear(), date.getMonth() + 1, date.getDate()];
+            let [h, min, s] = [date.getHours(), date.getMinutes(), date.getSeconds()];
+            return `${y}-${m < 10 ? '0' + m : m}-${d < 10 ? '0' + d : d} ${h < 10 ? '0' + h : h}:${min < 10 ? '0' + min : min}:${s < 10 ? '0' + s : s}`;
         },
         parse_rgba: (rgba) => {
             let [r, g, b, a] = rgba.match(/\(.*\)/g)[0].replace(/[\(\)]/g,'').split(',').map(str => +str.trim());

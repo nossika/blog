@@ -20,6 +20,7 @@ window.Waterfall = (() => {
                 _data = [];
                 _data.count = 0;
                 let _ctn_w = _ctn.offsetWidth;
+                _ctn_w = Math.max(_ctn_w, _box_w);
                 let _cols = Math.floor(_ctn_w / _box_w);
                 let _margin = (_ctn_w - _box_w * _cols) / 2;
                 for(let i = 0; i < _cols; i++){
