@@ -1,4 +1,4 @@
-window.FloatUtil = (() => {
+window.FloatUtil = window.FloatUtil || (() => {
     const dot_list = new Set();
     const _config = {
         link_dis: 100,
@@ -24,6 +24,7 @@ window.FloatUtil = (() => {
         },
     };
     let [_ctx, _ctx_w, _ctx_h] = [null, 0, 0];
+    let animating;
     let _mouse_dot = null;
     class Dot {
         constructor(config){
@@ -82,9 +83,14 @@ window.FloatUtil = (() => {
                 FloatUtil.clear();
                 FloatUtil.update();
                 FloatUtil.render();
+                if(!animating) return;
                 requestAnimationFrame(animation)
             };
+            animating = true;
             requestAnimationFrame(animation)
+        },
+        suspend: () => {
+            animating = false;
         },
         update: () => {
             let [top, right, bottom, left] = [
@@ -113,9 +119,7 @@ window.FloatUtil = (() => {
                 _ctx.closePath();
                 _ctx.fillStyle = `rgba(${_style.dot.r},${_style.dot.g},${_style.dot.b},${1})`;
                 _ctx.fill();
-                temp_list.add(dot);
                 temp_list.forEach((other_dot) => {
-                    if(other_dot === dot) return;
                     let dis = Math.pow(Math.pow(dot.x - other_dot.x, 2) + Math.pow(dot.y - other_dot.y, 2), 1/2)
                     if(dis > _config.link_dis) return;
                     _ctx.beginPath();
@@ -125,15 +129,19 @@ window.FloatUtil = (() => {
                     _ctx.strokeStyle = `rgba(${_style.line.r},${_style.line.g},${_style.line.b},${(1 - dis/_config.link_dis)*2})`;
                     _ctx.lineWidth = _style.line_w;
                     _ctx.stroke();
-                })
+                });
+                temp_list.add(dot);
             });
         },
         random_num:(max, min = 0) => {
             return Math.floor(min + Math.random() * (max + 1));
         },
         auto_add_dot: () => {
-            setInterval(() => {
-                if(dot_list.size > _config.max_dot) return;
+            let interval = setInterval(() => {
+                if(dot_list.size > _config.max_dot) {
+                    clearInterval(interval);
+                    return;
+                }
                 FloatUtil.add_random_dot();
             }, 500)
         },
@@ -199,7 +207,4 @@ window.FloatUtil = (() => {
     return FloatUtil;
 })();
 
-window.addEventListener('keyup',()=>{
-
-});
 
