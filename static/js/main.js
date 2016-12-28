@@ -150,6 +150,8 @@
     FloatUtil.init_float(document.querySelector('#nav_canvas').getContext('2d'),{
 
     });
+    window.addEventListener('resize', FloatUtil.set_size);
+    
     FN.init_main_event();
     setTimeout(()=>{
         FN.init_nav();

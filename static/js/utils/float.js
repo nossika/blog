@@ -1,15 +1,26 @@
-window.FloatUtil = window.FloatUtil || (() => {
-    const dot_list = new Set();
-    const _config = {
+(factory => {
+    let root = (typeof self == 'object' && self.self === self && self) ||
+        (typeof global == 'object' && global.global === global && global);
+    if (typeof define === 'function' && define.amd) {
+        define([], ()=> {
+            root.FloatUtil = factory();
+        });
+    } else if (typeof exports === 'object') {
+        module.exports = factory();
+    } else {
+        root.FloatUtil = factory();
+    }
+})(() => {
+    let dot_list = new Set();
+    let _config = Object.seal({
         link_dis: 100,
         click_dot: 3,
         v_max: 6,
         max_dot: 20,
         border_extend: 30,
         r: 1.2
-    };
-    Object.seal(_config);
-    const _style = {
+    });
+    let _style = {
         line: {
             r: 1,
             g: 2,
@@ -198,13 +209,8 @@ window.FloatUtil = window.FloatUtil || (() => {
         Dot: Dot,
         dot_list: dot_list
     };
-
-    window.addEventListener('resize', FloatUtil.set_size);
-
-    window.requestAnimationFrame = window.requestAnimationFrame || ((fn) => {
-            setTimeout(fn, 1000/60);
-        });
     return FloatUtil;
-})();
+});
+
 
 
