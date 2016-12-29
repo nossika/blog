@@ -95,15 +95,15 @@ window.PlayerUtil = ((Util) => {
                 hide_dot: true,
                 disabled: true
             });
-            Bars.buffered.elem.bar.className = 'buffered-bar';
-            Bars.buffered.update();
+            Bars.buffered.elem.fill.className = 'buffered-fill';
+            Bars.buffered.render();
 
             Bars.progress = new Util.Bar(_player.querySelector('[data-bar="progress_bar"]'), {
                 hide_dot: true,
                 disabled: true
             });
-            Bars.progress.elem.bar.className = 'progress-bar';
-            Bars.progress.update();
+            Bars.progress.elem.fill.className = 'progress-fill';
+            Bars.progress.render();
 
 
 
@@ -368,19 +368,22 @@ window.PlayerUtil = ((Util) => {
             _player.querySelector('.container').appendChild(_list);
             Bars.list = new Util.Bar(_player.querySelector('[data-bar="list_bar"]'), {
                 default: 1,
-                hide_bar: true,
-                non_overflow: true
+                hide_fill: true,
+                inner_mode: true
             });
             Bars.list.elem.dot.className = 'list-dot';
-            Bars.list.update();
+            Bars.list.render();
 
             let view = _player.querySelector('.list-view');
             ul.addEventListener('mousewheel', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
                 if(ul.offsetHeight <= view.offsetHeight) return;
+                console.log(112)
                 let move = e.deltaY > 0 ? 50 : -50;
                 Bars.list.value -= move/(ul.offsetHeight - view.offsetHeight);
             });
-            Bars.list.event.change = (value, type) => {
+            Bars.list.on_change = (value, type) => {
                 let top = (1 - value) * (ul.offsetHeight - view.offsetHeight);
                 ul.style.top = -top + 'px';
             };
@@ -390,7 +393,7 @@ window.PlayerUtil = ((Util) => {
                 Bars.list.elem.dot.style.height = view_h/ul_h * 100 + '%';
                 if(ul_h <= view_h) Bars.list.hide_dot();
             }
-            Bars.list.update();
+            Bars.list.render();
         },
         create_volume: () => {
             let _volume = document.createElement('div');
@@ -405,9 +408,9 @@ window.PlayerUtil = ((Util) => {
                 default: _audio.volume,
             });
             Bars.volume.elem.dot.className = 'volume-dot';
-            Bars.volume.elem.bar.className = 'volume-bar';
-            Bars.volume.update();
-            Bars.volume.event.change = (value) => {
+            Bars.volume.elem.fill.className = 'volume-fill';
+            Bars.volume.render();
+            Bars.volume.on_change = (value) => {
                 _audio.volume = value;
             };
         },

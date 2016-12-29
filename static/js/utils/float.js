@@ -1,31 +1,34 @@
-window.FloatUtil = window.FloatUtil || (() => {
-    const dot_list = new Set();
-    const _config = {
-        link_dis: 100,
-        click_dot: 3,
-        v_max: 6,
-        max_dot: 20,
-        border_extend: 30,
-        r: 1.2
-    };
-    Object.seal(_config);
-    const _style = {
-        line: {
-            r: 1,
-            g: 2,
-            b: 100
-        },
-        line_w: 0.4,
-        dot: {
-            r: 100,
-            g: 50,
-            b: 50,
-            a: 1
-        },
-    };
-    let [_ctx, _ctx_w, _ctx_h] = [null, 0, 0];
-    let animating;
-    let _mouse_dot = null;
+(factory => {
+    let root = (typeof self == 'object' && self.self === self && self) ||
+        (typeof global == 'object' && global.global === global && global);
+    if (typeof define === 'function' && define.amd) {
+        define([], ()=> {
+            root.Float = factory();
+        });
+    } else if (typeof exports === 'object') {
+        module.exports = factory();
+    } else {
+        root.Float = factory();
+    }
+})(() => {
+    let _config = Object.seal({
+        dot_link: 100,
+        dot_v: [1, 6],
+        dot_click: [2, 4],
+        dot_max: 20,
+        dot_create: 500,
+        dot_r: [0.3, 1.5],
+        on_mousemove: true,
+        on_click: true,
+        extend_border: 30,
+        style: Object.seal({
+            line: {r: 255, g: 255, b: 255},
+            width: 0.6,
+            dot: {r: 255, g: 255, b: 255, a: 1},
+        })
+    });
+    let _style = _config.style;
+    let _ctx, _ctx_w, _ctx_h, _mouse_dot, _dot_list, _animating_id, _borders;
     class Dot {
         constructor(config){
             this.x = config.x || 0;
@@ -35,84 +38,98 @@ window.FloatUtil = window.FloatUtil || (() => {
             this.r = config.r || 0;
         }
     }
-    let FloatUtil = {
-        init_float: (ctx, config = {}) => {
-            _ctx = ctx;
-            FloatUtil.set_size();
-            FloatUtil.canvas_event();
-            FloatUtil.auto_add_dot();
-            FloatUtil.animate();
+    let json_clone = (target, source) => { // cover target with source
+        for (let item in source) {
+            if (source[item] instanceof Object) {
+                target[item] = target[item] instanceof Object
+                    ? target[item]
+                    : (Object.prototype.toString.call(source[item]) === '[object Array]' ? [] : {});
+                json_clone(target[item], source[item]);
+            }else {
+                target[item] = source[item];
+            }
+        }
+    };
+    let get_num = (source, fixed = 1) => { // source could be Number or Array
+        return source instanceof Array
+            ? source[0] + Math.floor(Math.random() * ((source[1] - source[0]) * fixed + 1)) / fixed
+            : source;
+    };
+    let Float = {
+        init (canvas, config = {}) {
+            _ctx = canvas.getContext('2d');
+            _mouse_dot = null;
+            _dot_list = new Set();
+            json_clone(_config, config);
+            Float.set_size();
+            Float.bind_event();
+            Float.auto_add_dot(_config.dot_max);
+            Float.suspend();
+            Float.resume();
         },
-        canvas_event: () => {
-            ['mousemove', 'mouseleave', 'click'].forEach((event) => {
-                _ctx.canvas.removeEventListener(event, FloatUtil[`canvas_${event}`]);
-                _ctx.canvas.addEventListener(event, FloatUtil[`canvas_${event}`]);
+        bind_event () {
+            let events = [];
+            if(_config.on_click) events.push('click');
+            if(_config.on_mousemove) events.push('mousemove', 'mouseleave');
+            events.forEach((event) => {
+                _ctx.canvas.removeEventListener(event, Float[`on_${event}`]);
+                _ctx.canvas.addEventListener(event, Float[`on_${event}`]);
             });
         },
-        canvas_mousemove: (e) => {
+        on_mousemove (e) {
             let [x, y] = [e.offsetX, e.offsetY];
             if(!_mouse_dot){
-                _mouse_dot = new Dot({
-                    x: x,
-                    y: y,
-                });
-                dot_list.add(_mouse_dot);
+                _mouse_dot = new Dot({x: x, y: y});
+                _dot_list.add(_mouse_dot);
                 return;
             }
             _mouse_dot.x = x;
             _mouse_dot.y = y;
         },
-        canvas_mouseleave: (e) => {
-            dot_list.delete(_mouse_dot);
+        on_mouseleave (e) {
+            _dot_list.delete(_mouse_dot);
             _mouse_dot = null;
         },
-        canvas_click: (e) => {
+        on_click (e) {
             let [x, y] = [e.offsetX, e.offsetY];
-            for(let i = 0; i < _config.click_dot; i++) {
-                dot_list.add(new Dot({
+            let n = get_num(_config.dot_click);
+            for(let i = 0; i < n; i++) {
+                _dot_list.add(new Dot({
                     x: x,
                     y: y,
-                    v_x: FloatUtil.random_num(_config.v_max, 2) * (Math.random() > 0.5 ? -1 : 1) / 10,
-                    v_y:FloatUtil.random_num(_config.v_max, 2) * (Math.random() > 0.5 ? -1 : 1) / 10,
-                    r: _config.r
+                    v_x: get_num(_config.dot_v, 100) * (Math.random() > 0.5 ? -1 : 1) / 10,
+                    v_y:get_num(_config.dot_v, 100) * (Math.random() > 0.5 ? -1 : 1) / 10,
+                    r: get_num(_config.dot_r, 100)
                 }))
             }
         },
-        animate: () => {
+        resume () {
+            cancelAnimationFrame(_animating_id);
             let animation = () => {
-                FloatUtil.clear();
-                FloatUtil.update();
-                FloatUtil.render();
-                if(!animating) return;
-                requestAnimationFrame(animation)
+                Float.clear();
+                Float.render();
+                _animating_id = requestAnimationFrame(animation)
             };
-            animating = true;
-            requestAnimationFrame(animation)
+            _animating_id = requestAnimationFrame(animation)
         },
-        suspend: () => {
-            animating = false;
+        suspend () {
+            cancelAnimationFrame(_animating_id);
         },
-        update: () => {
-            let [top, right, bottom, left] = [
-                0 - _config.border_extend,
-                _ctx_w + _config.border_extend,
-                _ctx_h + _config.border_extend,
-                0 - _config.border_extend,
-            ];
-
-            dot_list.forEach((dot) => {
-                dot.x = dot.x + dot.v_x;
-                dot.y = dot.y + dot.v_y;
-                if(dot.x < left || dot.x > right || dot.y < top || dot.y > bottom){
-                    dot_list.delete(dot);
-                    if(dot_list.size > _config.max_dot) return;
-                    FloatUtil.add_random_dot();
-                }
-            });
+        update (dot) {
+            let [top, right, bottom, left] = _borders;
+            dot.x = dot.x + dot.v_x;
+            dot.y = dot.y + dot.v_y;
+            if(dot.x < left || dot.x > right || dot.y < top || dot.y > bottom){
+                _dot_list.delete(dot);
+                if(_dot_list.size > _config.dot_max) return;
+                Float.add_dot();
+            }
         },
-        render: () => {
+        render () {
             let temp_list = new Set();
-            dot_list.forEach((dot) => {
+            _dot_list.forEach((dot) => {
+                Float.update(dot);
+                if(!_dot_list.has(dot)) return;
                 _ctx.beginPath();
                 _ctx.moveTo(dot.x, dot.y);
                 _ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
@@ -121,38 +138,35 @@ window.FloatUtil = window.FloatUtil || (() => {
                 _ctx.fill();
                 temp_list.forEach((other_dot) => {
                     let dis = Math.pow(Math.pow(dot.x - other_dot.x, 2) + Math.pow(dot.y - other_dot.y, 2), 1/2)
-                    if(dis > _config.link_dis) return;
+                    if(dis > _config.dot_link) return;
                     _ctx.beginPath();
                     _ctx.moveTo(dot.x, dot.y);
                     _ctx.lineTo(other_dot.x, other_dot.y);
                     _ctx.closePath();
-                    _ctx.strokeStyle = `rgba(${_style.line.r},${_style.line.g},${_style.line.b},${(1 - dis/_config.link_dis)*2})`;
-                    _ctx.lineWidth = _style.line_w;
+                    _ctx.strokeStyle = `rgba(${_style.line.r},${_style.line.g},${_style.line.b},${(1 - dis/_config.dot_link)*2})`;
+                    _ctx.lineWidth = _style.width;
                     _ctx.stroke();
                 });
                 temp_list.add(dot);
             });
         },
-        random_num:(max, min = 0) => {
-            return Math.floor(min + Math.random() * (max + 1));
-        },
-        auto_add_dot: () => {
+        auto_add_dot (num) {
             let interval = setInterval(() => {
-                if(dot_list.size > _config.max_dot) {
+                if(_dot_list.size > num) {
                     clearInterval(interval);
                     return;
                 }
-                FloatUtil.add_random_dot();
-            }, 500)
+                Float.add_dot();
+            }, _config.dot_create)
         },
-        add_random_dot: () => {
+        add_dot () {
             let [x, y, v_x, v_y] = [
-                FloatUtil.random_num(_ctx_w),
-                FloatUtil.random_num(_ctx_h),
-                FloatUtil.random_num(_config.v_max, 1) * (Math.random() > 0.5 ? -1 : 1) / 10,
-                FloatUtil.random_num(_config.v_max, 1) * (Math.random() > 0.5 ? -1 : 1) / 10
+                get_num([0, _ctx_w]),
+                get_num([0, _ctx_h]),
+                get_num(_config.dot_v, 100) * (Math.random() > 0.5 ? -1 : 1) / 10,
+                get_num(_config.dot_v, 100) * (Math.random() > 0.5 ? -1 : 1) / 10
             ];
-            switch (FloatUtil.random_num(3)) {
+            switch (get_num([0, 3])) {
                 case 0:
                     y = 0;
                     v_y = Math.abs(v_y);
@@ -171,40 +185,39 @@ window.FloatUtil = window.FloatUtil || (() => {
                     break;
             }
 
-            dot_list.add(new Dot({
+            _dot_list.add(new Dot({
                 x: x,
                 y: y,
                 v_x: v_x,
                 v_y: v_y,
-                r: _config.r
+                r: get_num(_config.dot_r, 100)
             }));
         },
-        set_style: (style) => {
+        set_style (style) {
             style = JSON.parse(JSON.stringify(style));
             for(let prop in style){
                 _style[prop] = style[prop];
             }
         },
-        set_size: (e) => {
+        set_size () {
             if(!_ctx) return;
             _ctx_w = _ctx.canvas.offsetWidth;
             _ctx_h = _ctx.canvas.offsetHeight;
             _ctx.canvas.width = _ctx_w;
             _ctx.canvas.height = _ctx_h;
+            _borders = [
+                0 - _config.extend_border,
+                _ctx_w + _config.extend_border,
+                _ctx_h + _config.extend_border,
+                0 - _config.extend_border,
+            ];
         },
-        clear: () => {
+        clear () {
             _ctx.clearRect(0, 0, _ctx_w, _ctx_h);
         },
-        Dot: Dot,
-        dot_list: dot_list
     };
+    return Float;
+});
 
-    window.addEventListener('resize', FloatUtil.set_size);
-
-    window.requestAnimationFrame = window.requestAnimationFrame || ((fn) => {
-            setTimeout(fn, 1000/60);
-        });
-    return FloatUtil;
-})();
 
 

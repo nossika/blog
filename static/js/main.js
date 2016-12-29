@@ -51,9 +51,9 @@
                     item.classList.add('at');
                     let theme = item.getAttribute('data-theme');
                     document.body.style.backgroundColor = theme;
-                    if(FloatUtil){
+                    if(typeof Float !== 'undefined'){
                         let [r, g, b] = [255,255,255]||Util.hex_to_rgb(theme);
-                        FloatUtil.set_style({
+                        Float.set_style({
                             line: {r:r,g:g,b:b},
                             dot: {r:r,g:g,b:b,a:1},
                         })
@@ -147,8 +147,7 @@
         });
     });
 
-    FloatUtil.init_float(document.querySelector('#nav_canvas').getContext('2d'),{
-
+    Float.init(document.querySelector('#nav_canvas'),{
     });
     FN.init_main_event();
     setTimeout(()=>{
@@ -158,19 +157,19 @@
     // nav.style.display ='none'
     let nav_canvas = document.querySelector('#nav_canvas');
     nav.addEventListener('click', (e) => {
-        FloatUtil.canvas_click({
+        Float.on_click({
             offsetX: e.offsetX + e.target.offsetLeft,
             offsetY: e.offsetY + e.target.offsetTop
         })
     });
     nav.addEventListener('mousemove', (e) => {
-        FloatUtil.canvas_mousemove({
+        Float.on_mousemove({
             offsetX: e.offsetX + e.target.offsetLeft,
             offsetY: e.offsetY + e.target.offsetTop
         })
     });
     nav.addEventListener('mouseleave', (e) => {
-        FloatUtil.canvas_mouseleave();
+        Float.on_mouseleave();
     });
 })();
 
