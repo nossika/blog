@@ -1,4 +1,4 @@
-<% include _parts/header.ejs %>
+<% include parts/header.ejs %>
 <section id="nav-container">
     <nav id="nav" data-at="<%= nav %>" onselectstart="return false;">
         <div class="nav-mask-top"></div>
@@ -14,19 +14,19 @@
 <section id="main-container">
 
     <% if(nav === 'index') { %>
-        <% include _main/index.ejs %>
+        <% include main/index.ejs %>
     <% }else if(nav === 'game'){ %>
-        <% include _main/game.ejs %>
+        <% include main/game.ejs %>
     <% }else if(nav === 'graffiti'){ %>
-        <% include _main/graffiti.ejs %>
+        <% include main/graffiti.ejs %>
     <% }else if(nav === 'about'){ %>
-        <% include _main/about.ejs %>
+        <% include main/about.ejs %>
     <% }else if(nav === '404'){ %>
-        <% include _main/404.ejs %>
+        <% include main/404.ejs %>
     <% } %>
 
 </section>
 
 <script src="/js/main.js"></script>
 
-<% include _parts/footer.ejs %>
+<% include parts/footer.ejs %>
