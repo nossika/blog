@@ -149,6 +149,8 @@
 
     Float.init(document.querySelector('#nav_canvas'),{
     });
+    window.addEventListener('resize', Float.set_size);
+    
     FN.init_main_event();
     setTimeout(()=>{
         FN.init_nav();
