@@ -379,7 +379,6 @@ window.PlayerUtil = ((Util) => {
                 e.stopPropagation();
                 e.preventDefault();
                 if(ul.offsetHeight <= view.offsetHeight) return;
-                console.log(112)
                 let move = e.deltaY > 0 ? 50 : -50;
                 Bars.list.value -= move/(ul.offsetHeight - view.offsetHeight);
             });

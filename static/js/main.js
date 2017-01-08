@@ -155,9 +155,10 @@
     setTimeout(()=>{
         FN.init_nav();
     },0);
+
     let nav = document.querySelector('#nav');
-    // nav.style.display ='none'
     let nav_canvas = document.querySelector('#nav_canvas');
+
     nav.addEventListener('click', (e) => {
         Float.on_click({
             offsetX: e.offsetX + e.target.offsetLeft,

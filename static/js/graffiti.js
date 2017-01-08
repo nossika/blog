@@ -61,7 +61,7 @@
                     if(!d) return;
                 
                     d.forEach((canvas_data) => {
-                        let main_data = canvas_data.data,   
+                        let main_data = canvas_data.data,
                             time = Util.format_date(canvas_data.time);
                         if(!main_data) return;
                         let canvas = document.createElement('canvas'),

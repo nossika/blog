@@ -103,7 +103,7 @@
                         <div><span class="desc">角色： </span><span class="role"></span></div>
                         <div><span class="desc">任务配置： </span><span class="vote"></span></div>
                         <div><button data-action="next" class="btn btn-md btn-red">开始游戏</button></div>
-                        <div><button data-action="return" class="btn btn-sm btn-white">返回</button></div>
+                        <div><button data-action="return" class="btn btn-sm btn-white">返回首页</button></div>
                     </div>
                 `,
             begin_role: {
@@ -392,9 +392,9 @@
         if(!game) return;
         let util = games[game]();
         util.init(board);
-        target.classList.add('enlarge-out');
+        target.classList.add('enter-game');
         let animationend = () => {
-            target.classList.remove('enlarge-out');
+            target.classList.remove('enter-game');
             list.classList.add('hide');
             board.classList.remove('hide');
             target.removeEventListener('animationend', animationend);
