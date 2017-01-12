@@ -13,9 +13,6 @@ window.PlayerUtil = ((Util) => {
             PlayerUtil.player_events(config);
             PlayerUtil.switch_mode('normal');
             PlayerUtil.set_volume(0.8);
-            if(_data.list.length){
-                PlayerUtil.play('random');
-            }
         },
         player_render: (config) => {
             _player = document.createElement('section');

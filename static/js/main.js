@@ -3,40 +3,42 @@
 
     const FN = {
         init_nav: () => {
-            let nav = document.querySelector('#nav'),
-                at = nav.getAttribute('data-at');
-            let nav_items = [].slice.call(document.querySelectorAll('#nav .nav-item'));
-            nav_items.forEach((item, index) => {
-                let href = item.getAttribute('href'),
-                    name = item.getAttribute('data-nav');
-                let theme = item.getAttribute('data-theme');
-                if(name === at) {
-                    FN.switch_nav(name);
-                    history.replaceState({
-                        nav: name
-                    }, name, href)
-                }
-
-                let theme_preview = item.querySelector('.color');
-                theme_preview.style.background = theme;
-
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    let target = e.target;
-                    while(!target.getAttribute('data-nav')){
-                        target = target.parentNode;
-                    }
-                    if(target.classList.contains('at')) return;
+            [document.querySelector('#nav'), document.querySelector('#nav2')].forEach((nav, nav_index) => {
+                let at = nav.getAttribute('data-at');
+                let nav_items = [].slice.call(nav.querySelectorAll('.nav-item'));
+                nav_items.forEach((item, index) => {
                     let href = item.getAttribute('href'),
                         name = item.getAttribute('data-nav');
-                    FN.switch_nav(name);
-                    FN.render_part(name, () => {
-                        history.pushState({
+                    let theme = item.getAttribute('data-theme');
+                    if(name === at) {
+                        FN.switch_nav(name);
+                        history.replaceState({
                             nav: name
                         }, name, href)
+                    }
+
+                    let theme_preview = item.querySelector('.color');
+                    theme_preview.style.background = theme;
+
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        let target = e.target;
+                        while(!target.getAttribute('data-nav')){
+                            target = target.parentNode;
+                        }
+                        if(target.classList.contains('at')) return;
+                        let href = item.getAttribute('href'),
+                            name = item.getAttribute('data-nav');
+                        FN.switch_nav(name);
+                        FN.render_part(name, () => {
+                            history.pushState({
+                                nav: name
+                            }, name, href)
+                        });
                     });
                 });
             });
+
             window.addEventListener('popstate', (e) => {
                 let state = e.state;
                 FN.switch_nav(state.nav);
@@ -45,21 +47,25 @@
         },
         switch_nav: (nav_name) => {
             if(window.game_socket) window.game_socket.close();
-            [].slice.call(document.querySelectorAll('#nav .nav-item')).forEach((item) => {
-                item.classList.remove('at');
-                if(nav_name === item.getAttribute('data-nav')){
-                    item.classList.add('at');
-                    let theme = item.getAttribute('data-theme');
-                    document.body.style.backgroundColor = theme;
-                    if(typeof Float !== 'undefined'){
-                        let [r, g, b] = [255,255,255]||Util.hex_to_rgb(theme);
-                        Float.set_style({
-                            line: {r:r,g:g,b:b},
-                            dot: {r:r,g:g,b:b,a:1},
-                        })
+            [document.querySelector('#nav'), document.querySelector('#nav2')].forEach((nav, nav_index) => {
+                [].slice.call(nav.querySelectorAll('.nav-item')).forEach((item) => {
+                    item.classList.remove('at');
+                    if(nav_name === item.getAttribute('data-nav')){
+                        item.classList.add('at');
+                        if (nav_index === 1) return;
+                        let theme = item.getAttribute('data-theme');
+                        document.body.style.backgroundColor = theme;
+                        if(typeof Float !== 'undefined'){
+                            let [r, g, b] = [255,255,255]||Util.hex_to_rgb(theme);
+                            Float.set_style({
+                                line: {r:r,g:g,b:b},
+                                dot: {r:r,g:g,b:b,a:1},
+                            })
+                        }
                     }
-                }
+                });
             });
+
         },
         render_part: (part, cb) => {
             let container = document.querySelector('#main-container');
@@ -145,6 +151,8 @@
             id: 'player',
             list: list
         });
+        PlayerUtil.play('random');
+        
     });
 
     Float.init(document.querySelector('#nav_canvas'),{

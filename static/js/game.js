@@ -381,13 +381,14 @@
         avalon: avalon,
         undercover: undercover
     };
-    let board = document.querySelector('#game-board');
-    let list = document.querySelector('#game-list');
+    let board = document.querySelector('#game .game-board');
+    let list = document.querySelector('#game .game-list');
     list.addEventListener('click', (e) => {
         let target = e.target;
-        while(target.id !== 'game-list' && !target.getAttribute('data-game')){
+        while(target.id !== 'game-list' && target.getAttribute && !target.getAttribute('data-game')){
             target = target.parentNode;
         }
+        if(!target || !target.getAttribute) return;
         let game = target.getAttribute('data-game');
         if(!game) return;
         let util = games[game]();
