@@ -1,5 +1,5 @@
 (()=>{
-    const server = 'http://localhost:7869';
+    const server = 'http://45.119.127.193';
 
     const FN = {
         init_nav: () => {
@@ -71,7 +71,7 @@
             let container = document.querySelector('#main-container');
             // waiting animation;
             Util.ajax({
-                url: `${server}/tool/view_part`,
+                url: `/tool/view_part`,
                 data: {
                     part: part
                 },
@@ -183,11 +183,6 @@
         Float.on_mouseleave();
     });
 })();
-
-
-
-
-
 
 
 

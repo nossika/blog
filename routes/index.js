@@ -6,7 +6,7 @@ let route_index = (me)=>{
     me.body = html;
 };
 
-module.exports = (router) => {
+module.exports = router => {
     router.get('/', function* (){
         route_index(this);
     });

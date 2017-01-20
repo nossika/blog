@@ -1,5 +1,5 @@
 window.PlayerUtil = ((Util) => {
-    const server = 'http://localhost:7869';
+    const server = '';
     let _data = {
         mode: '', // normal / loop / random
         current: 0,
@@ -69,7 +69,6 @@ window.PlayerUtil = ((Util) => {
                 },0);
             });
 
-
             _audio.addEventListener('loadstart', (e) => {
                 PlayerUtil.onbegin(e);
             });
@@ -85,7 +84,6 @@ window.PlayerUtil = ((Util) => {
             _audio.addEventListener('ended', (e) => {
                 PlayerUtil.onend(e);
             });
-
         },
         init_bars: () => {
             Bars.buffered = new Util.Bar(_player.querySelector('[data-bar="buffered_bar"]'), {
@@ -171,15 +169,15 @@ window.PlayerUtil = ((Util) => {
         onbuffer: (e) => {
             let buffer = _audio.buffered;
             let loaded = [];
-            for(let i = 0; i < buffer.length; i++){
+            for (let i = 0; i < buffer.length; i++) {
                 loaded.push([buffer.start(i), buffer.end(i)])
             }
-            if(loaded.length){
+            if (loaded.length) {
                 Bars.buffered.value = loaded[0][1]/_audio.duration;
             }
         },
         onend: (e) => {
-            switch (_data.mode){
+            switch (_data.mode) {
                 case 'normal':
                     PlayerUtil.play('next');
                     break;
@@ -197,9 +195,9 @@ window.PlayerUtil = ((Util) => {
 
             let mode_div = _player.querySelector('[data-mode]'),
                 svg = mode_div.querySelector('use');
-            if(!mode){
+            if (!mode) {
                 mode = mode_list[mode_list.indexOf(_data.mode) + 1];
-                if(!mode) mode = mode_list[0];
+                if (!mode) mode = mode_list[0];
             }
             _data.mode = mode;
             svg.setAttribute('xlink:href',`#svgpath-audio-${mode}`);
@@ -214,7 +212,7 @@ window.PlayerUtil = ((Util) => {
             Bars.progress.value = _audio.duration ? _audio.currentTime / _audio.duration : 0;
         },
         convert_sec: (sec) => {
-            if(!sec) sec = 0;
+            if (!sec) sec = 0;
             sec = parseInt(sec);
             let s = sec % 60;
             s = s < 10 ? '0' + s : s;
@@ -226,7 +224,7 @@ window.PlayerUtil = ((Util) => {
             Util.ajax({
                 url: server + '/tool/music_info',
                 callback: (data, status) => {
-                    if(status === 200) {
+                    if (status  === 200) {
                         let list = JSON.parse(data);
                         callback && callback(list);
                     }

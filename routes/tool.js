@@ -2,7 +2,23 @@
 const fs = require('fs');
 const util = require('../util/main');
 
-module.exports = (router) => {
+let Visitors, visitors_count;
+global.mongodb_ready.push((err, db) => {
+    Visitors = db.collection('visitors');
+    Visitors.find({$or: [
+        {count: {$type: 16}},
+        {count: {$type: 18}},
+    ]}).toArray((e, d) => {
+        if (!d.length) {
+            Visitors.insertOne({count: 1});
+            visitors_count = 1;
+            return;
+        }
+        visitors_count = d[0].count;
+    });
+});
+
+module.exports = router => {
     router.get('/tool/view_part', function* () {
         let part = this.query.part;
         let html = util.render(`main/${part}.ejs`, {nav: 'index'});
@@ -17,12 +33,22 @@ module.exports = (router) => {
         file_list.forEach((name) => {
             let [author, title] = name.slice(0, name.lastIndexOf('.')).split(' - ');
             list.push({
-                path: file_path + '/' + name,
+                src: file_path + '/' + name,
                 author: author,
                 title: title,
-                cover: `/music/cover/${author}.jpg`
-            })
+                cover: `/music/cover/${author}.jpg`,
+                lrc: `/music/lrc/${title}.lrc`,
+            });
         });
+        this.response.set('Access-Control-Allow-Origin', '*'); // 允许跨域
         this.body = list
+    });
+    router.get('/tool/visitors', function* () {
+        visitors_count++;
+        Visitors.updateOne({$or: [
+            {count: {$type: 16}},
+            {count: {$type: 18}},
+        ]}, {$set: {count: visitors_count}});
+        this.body = visitors_count;
     });
 };
