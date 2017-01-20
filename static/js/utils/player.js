@@ -12,7 +12,7 @@ window.PlayerUtil = ((Util) => {
             PlayerUtil.player_render(config);
             PlayerUtil.player_events(config);
             PlayerUtil.switch_mode('normal');
-            PlayerUtil.set_volume(0.8);
+            PlayerUtil.set_volume(0.75);
         },
         player_render: (config) => {
             _player = document.createElement('section');
