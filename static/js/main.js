@@ -10,12 +10,6 @@
                     let href = item.getAttribute('href'),
                         name = item.getAttribute('data-nav');
                     let theme = item.getAttribute('data-theme');
-                    if(name === at) {
-                        FN.switch_nav(name);
-                        history.replaceState({
-                            nav: name
-                        }, name, href)
-                    }
 
                     let theme_preview = item.querySelector('.color');
                     theme_preview.style.background = theme;
@@ -36,6 +30,15 @@
                             }, name, href)
                         });
                     });
+
+                    if(name === at) {
+                        setTimeout(() => {
+                            FN.switch_nav(name);
+                            history.replaceState({
+                                nav: name
+                            }, name, href)
+                        }, 0)
+                    }
                 });
             });
 
@@ -69,13 +72,15 @@
         },
         render_part: (part, cb) => {
             let container = document.querySelector('#main-container');
-            // waiting animation;
+            // todo: loading animation;
+            container.innerHTML = '<div class="loading">loading...</div>';
             Util.ajax({
                 url: `/tool/view_part`,
                 data: {
                     part: part
                 },
                 callback: (data, status)=>{
+                    if (!data) return;
                     let temp_html = document.createElement('div');
                     temp_html.innerHTML = data;
                     let scripts = [];
@@ -152,13 +157,13 @@
             list: list
         });
         PlayerUtil.play('random');
-        
+
     });
 
     Float.init(document.querySelector('#nav_canvas'),{
     });
     window.addEventListener('resize', Float.set_size);
-    
+
     FN.init_main_event();
     setTimeout(()=>{
         FN.init_nav();

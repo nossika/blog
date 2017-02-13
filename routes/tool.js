@@ -30,7 +30,7 @@ module.exports = router => {
         let path = static_path + file_path;
         let file_list = fs.readdirSync(path);
         let list = [];
-        file_list.forEach((name) => {
+        file_list.filter(name => name.includes('.mp3')).forEach(name => {
             let [author, title] = name.slice(0, name.lastIndexOf('.')).split(' - ');
             list.push({
                 src: file_path + '/' + name,
