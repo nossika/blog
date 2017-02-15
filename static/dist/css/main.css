@@ -7,10 +7,12 @@
   font-weight: normal; }
 
 body {
+  min-height: 100%;
   background: url("/img/texture.png");
   transition: background-color 1.2s ease-in; }
 
 html {
+  height: 100%;
   font-family: 'Microsoft YaHei', Helvetica, Arial, monospace;
   font-size: 16px; }
 

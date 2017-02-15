@@ -142,7 +142,7 @@ window.PlayerUtil = ((Util) => {
                 cover.src = '/img/default.png';
                 cover.onerror = null;
             };
-            _audio.src = _data.list[index].path;
+            _audio.src = _data.list[index].src;
             Bars.buffered.value = 0;
             _audio.load();
         },
