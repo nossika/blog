@@ -5,24 +5,24 @@ const babel = require('gulp-babel');
 const sass = require('gulp-sass');
 
 gulp.task('package_js', () => {
-    gulp.src(['static/js/util.js', 'static/js/utils/*.js'])
+    gulp.src(['src/util/main.js', 'src/util/sub/*.js'])
         .pipe(babel({
             presets: ['es2015'],
             // plugins: ['transform-runtime'],
         }))
-        .pipe(concat('compressed.js'))
+        .pipe(concat('util_pack.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('static/dist/js'));
+        .pipe(gulp.dest('static/js'));
 });
 gulp.task('compile_scss', () => {
-    gulp.src('static/scss/*.scss')
+    gulp.src('src/scss/*.scss')
         .pipe(sass({
             // outputStyle: 'compressed'
         }))
-        .pipe(gulp.dest('static/dist/css'));
+        .pipe(gulp.dest('static/css'));
 });
-gulp.watch('static/scss/*.scss', ['compile_scss']);
-gulp.watch(['static/js/util.js', 'static/js/utils/*.js'], ['package_js']);
+gulp.watch('src/scss/*.scss', ['compile_scss']);
+gulp.watch(['src/util/main.js', 'src/util/sub/*.js'], ['package_js']);
 
 gulp.task('default', ['package_js', 'compile_scss'], () => {
     console.log('done');

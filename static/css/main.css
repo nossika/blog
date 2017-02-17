@@ -773,6 +773,37 @@ button {
   text-align: center;
   margin: 20px 0; }
 
+/* about */
+#about {
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+  #about .works {
+    max-width: 900px; }
+    #about .works .title {
+      font-size: 26px;
+      margin: 40px 0 0 30px;
+      position: relative; }
+      #about .works .title::before {
+        content: '';
+        height: 100%;
+        width: 4px;
+        background: #333;
+        position: absolute;
+        top: 0;
+        left: -20px; }
+    #about .works .list li {
+      margin: 15px 10px;
+      list-style: none; }
+      #about .works .list li a {
+        color: #345;
+        font-size: 22px;
+        line-height: 32px;
+        text-decoration: underline; }
+      #about .works .list li p {
+        font-size: 20px;
+        line-height: 30px; }
+
 .shape-block {
   width: 30px;
   height: 30px;
