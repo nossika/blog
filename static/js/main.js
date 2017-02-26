@@ -154,7 +154,8 @@
     PlayerUtil.get_list((list) => {
         PlayerUtil.init_player({
             id: 'player',
-            list: list
+            list: list,
+            vol: 0.1
         });
         PlayerUtil.play('random');
 
